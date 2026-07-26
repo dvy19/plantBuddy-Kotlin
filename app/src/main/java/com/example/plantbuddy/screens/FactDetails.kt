@@ -1,6 +1,7 @@
 package com.example.plantbuddy.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.plantbuddy.plants.Fact
+import com.example.plantbuddy.room.SavedFactViewModel
 
 // --- Greenery Color Palette Setup ---
 private val EmeraldPrimary = Color(0xFF2E6F40)      // Primary Green
@@ -37,6 +40,8 @@ fun FactDetails(
     onSaveOfflineClick: () -> Unit = {}
 ) {
 
+
+    val viewModel: SavedFactViewModel=viewModel()
 
     Scaffold(
         topBar = {
@@ -123,6 +128,10 @@ fun FactDetails(
                             imageVector = Icons.Default.BookmarkBorder,
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
+                                .clickable{
+                                    viewModel.saveFact(fact)
+
+                                }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
