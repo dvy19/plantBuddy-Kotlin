@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "823955593548",
+    "project_id": "plantbuddy-c0c45",
+    "storage_bucket": "plantbuddy-c0c45.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823955593548:android:7c4e01fc93dc3ac32017e9",
+        "android_client_info": {
+          "package_name": "com.example.plantbuddy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7b1IeD4mIU948AO_VsWcal6LwMpIXoxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
