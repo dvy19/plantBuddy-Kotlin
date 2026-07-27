@@ -28,7 +28,12 @@ class PicViewModel(
     val savePicState: StateFlow<SavedPicState> = _savePicState.asStateFlow()
 
 
-    fun saveFact(pic: OfflinePicEntity) {
+
+
+    val savedPics = repository.getAllSavedPics()
+
+
+    fun savePic(pic: OfflinePicEntity) {
         viewModelScope.launch {
             _savePicState.value = SavedPicState.Loading
             try {
@@ -37,7 +42,10 @@ class PicViewModel(
                       imagePath = pic.imagePath,
                       note = pic.note,
                       plant_name = pic.plant_name,
-                      savedAt = System.currentTimeMillis()
+                      savedAt = System.currentTimeMillis(),
+                      mood = pic.mood,
+                      date = pic.date,
+                      time = pic.time
                   )
                 )
                 _savePicState.value = SavedPicState.Success

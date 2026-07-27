@@ -191,7 +191,7 @@ fun CameraScreen(
                                 Uri.encode(file.absolutePath)
 
                             mainNavController.navigate(
-                                "review/$encodedPath"
+                                "add_note/$encodedPath"
                             )
                         }
 

@@ -15,6 +15,11 @@ data class OfflinePicEntity(
 
     var plant_name:String,
 
-    val savedAt: Long = System.currentTimeMillis()
+    val savedAt: Long = System.currentTimeMillis(),
+
+    val mood: String="",
+    val date: String,
+
+    val time: String,
 
 )

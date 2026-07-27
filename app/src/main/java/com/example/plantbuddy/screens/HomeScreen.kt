@@ -138,9 +138,11 @@ fun HomeScreen(mainNavController: NavController) {
                 )
 
                 NavigationDrawerItem(
-                    label = { Text("Log Out") },
+                    label = { Text("Saved Photos") },
                     selected = false,
-                    onClick = {},
+                    onClick = {
+                        mainNavController.navigate(Screens.SavedPhotosScreen.route)
+                    },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
 

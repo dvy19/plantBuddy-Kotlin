@@ -42,4 +42,8 @@ sealed class Screens( var route:String){
 
     data object CameraScreen:Screens("camera_screen")
 
+    data object AddNoteScreen:Screens("add_note")
+
+    data object SavedPhotosScreen:Screens("saved_photos")
+
 }

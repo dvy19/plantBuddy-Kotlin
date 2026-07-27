@@ -49,7 +49,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.plantbuddy.room.DatabaseProvider
+import com.example.plantbuddy.room.photo.OfflinePicEntity
+import com.example.plantbuddy.room.photo.PicRepository
+import com.example.plantbuddy.room.photo.PicViewModel
+import com.example.plantbuddy.room.photo.PicViewModelFact
+import com.example.plantbuddy.room.photo.SavedPicState
 
 val SageGreen = Color(0xFF2D5A27)        // Rich, grounded green for primary actions
 val SoftSage = Color(0xFFE8F0E6)         // Light, soothing green for backgrounds
@@ -59,11 +66,23 @@ val Charcoal = Color(0xFF232323)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewScreen(
+fun AddNoteScreen(
     mainNavController: NavController,
     imagePath: String,
 
 ) {
+
+    val context=LocalContext.current
+
+    val viewModel:PicViewModel=viewModel(
+        factory = remember(context){
+            val database=DatabaseProvider.getDatabase(context.applicationContext)
+            val repository=PicRepository(database.picDao())
+            PicViewModelFact(repository)
+        }
+    )
+
+    val savedPicState by viewModel.savePicState.collectAsState()
 
     val moodOptions = listOf(
         Pair("😊", "Happy"), Pair("🌿", "Peaceful"), Pair("🧘", "Calm"),
@@ -112,6 +131,20 @@ fun ReviewScreen(
             ExtendedFloatingActionButton(
                 onClick = {
 
+
+                    val pic= OfflinePicEntity(
+                        imagePath = imagePath,
+                        note = note,
+                        plant_name = "",
+                        savedAt = System.currentTimeMillis(),
+                        mood = selectedMood,
+                        date = currentDate,
+                        time = currentTime
+                    )
+
+                    viewModel.savePic(pic)
+
+
                 },
                 containerColor = SageGreen,
                 contentColor = Color.White,
@@ -119,7 +152,27 @@ fun ReviewScreen(
             ) {
                 Icon(Icons.Default.Done, contentDescription = "Save Entry")
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Publish", style = MaterialTheme.typography.labelLarge)
+
+                when(savedPicState){
+                    is SavedPicState.Idle->{
+                        Text("Save")
+                    }
+
+                    is SavedPicState.Loading->{
+                        CircularProgressIndicator(color = Color.White)
+                    }
+                    is SavedPicState.Success->{
+                        Text("Saved Offline")
+                    }
+                    is SavedPicState.Error->{
+                        Text("Retry")
+                    }
+                    else->{
+                        Text("Save")
+                    }
+                }
+
+
             }
         },
         containerColor = WarmIvory

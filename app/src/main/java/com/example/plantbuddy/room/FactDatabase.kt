@@ -15,7 +15,7 @@ import com.example.plantbuddy.room.photo.PicDao
 
 
                ],
-    version = 2
+    version = 3
 )
 abstract class FactDatabase : RoomDatabase() {
 
