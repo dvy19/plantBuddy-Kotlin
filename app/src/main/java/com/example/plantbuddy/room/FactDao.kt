@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FactDao {
 
-
-
-
         @Insert(onConflict = OnConflictStrategy.REPLACE)
         suspend fun insertFact(fact: SavedFact)
 

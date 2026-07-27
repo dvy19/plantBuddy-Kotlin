@@ -15,6 +15,7 @@ android {
     namespace = "com.example.plantbuddy"
     compileSdk = 35
 
+
     packaging {
         resources {
             excludes += "/META-INF/gradle/incremental.annotation.processors"
@@ -39,8 +40,18 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+
+
+            buildConfigField(
+                "String",
+                "WEATHER_API_KEY",
+                "\"${project.findProperty("WEATHER_API_KEY")}\""
+            )
+
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
 
     buildTypes {
         release {
@@ -60,7 +71,9 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+
 }
 
 
@@ -75,6 +88,7 @@ dependencies {
 
     // KSP annotation processor (generates Room implementation code)
     implementation("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // Core — pinned to avoid SDK 36 requirement
     implementation("androidx.core:core-ktx:1.15.0")
@@ -116,6 +130,18 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+
+    // camera x
+
+
+
+
+    implementation ("androidx.camera:camera-camera2:1.3.3")
+    implementation ("androidx.camera:camera-lifecycle:1.3.3")
+    implementation ("androidx.camera:camera-view:1.3.3")
+    implementation ("androidx.camera:camera-core:1.3.3")
+
 
     // Gson
     implementation("com.google.code.gson:gson:2.11.0")

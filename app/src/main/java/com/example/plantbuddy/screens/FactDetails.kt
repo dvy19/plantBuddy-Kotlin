@@ -12,15 +12,22 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.plantbuddy.plants.Fact
+import com.example.plantbuddy.room.DatabaseProvider
+import com.example.plantbuddy.room.SavedFactRepository
+import com.example.plantbuddy.room.SavedFactState
 import com.example.plantbuddy.room.SavedFactViewModel
+import com.example.plantbuddy.room.SavedViewModelFac
 
 // --- Greenery Color Palette Setup ---
 private val EmeraldPrimary = Color(0xFF2E6F40)      // Primary Green
@@ -41,7 +48,20 @@ fun FactDetails(
 ) {
 
 
-    val viewModel: SavedFactViewModel=viewModel()
+
+    val context = LocalContext.current
+
+    val viewModel: SavedFactViewModel = viewModel(
+        factory = remember(context) {
+            val database = DatabaseProvider.getDatabase(context.applicationContext)
+            val repository = SavedFactRepository(database.savedFactDao())
+            SavedViewModelFac(repository)
+        }
+    )
+
+    val saveState by viewModel.saveState.collectAsState()
+
+
 
     Scaffold(
         topBar = {
@@ -114,9 +134,10 @@ fun FactDetails(
 
                     // Save Offline Button (Filled Primary Accent)
                     Button(
-                        onClick = onSaveOfflineClick,
+                        onClick = { viewModel.saveFact(fact) },
                         modifier = Modifier
                             .weight(1.2f)
+
                             .height(50.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -128,18 +149,15 @@ fun FactDetails(
                             imageVector = Icons.Default.BookmarkBorder,
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
-                                .clickable{
-                                    viewModel.saveFact(fact)
 
-                                }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Save Offline",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
+                        when (saveState) {
+                            is SavedFactState.Loading -> CircularProgressIndicator(color = Color.White)
+                            is SavedFactState.Success -> Text("Saved Offline ✓")
+                            is SavedFactState.Error -> Text("Retry Save")
+                            else -> Text("Save Offline")
+                        }
                     }
                 }
             }

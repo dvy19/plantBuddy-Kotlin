@@ -118,9 +118,11 @@ fun HomeScreen(mainNavController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 NavigationDrawerItem(
-                    label = { Text("Reviews Added") },
+                    label = { Text("Saved Facts") },
                     selected = false,
-                    onClick = {},
+                    onClick = {
+                        mainNavController.navigate(Screens.SavedFactsScreen.route)
+                    },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
 
@@ -181,7 +183,9 @@ fun HomeScreen(mainNavController: NavController) {
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = {}) {
+                FloatingActionButton(onClick = {
+                    mainNavController.navigate(Screens.CameraScreen.route)
+                }) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add"

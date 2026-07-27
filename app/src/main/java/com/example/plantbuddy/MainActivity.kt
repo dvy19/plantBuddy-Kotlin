@@ -38,4 +38,8 @@ sealed class Screens( var route:String){
 
     data object PlantDetailScreen : Screens("plant_detail/{id}")
 
+    data object SavedFactsScreen : Screens("saved_facts")
+
+    data object CameraScreen:Screens("camera_screen")
+
 }

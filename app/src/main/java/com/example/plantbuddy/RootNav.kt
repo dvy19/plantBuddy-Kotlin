@@ -4,15 +4,18 @@ package com.example.plantbuddy
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.plantbuddy.camera.CameraScreen
 import com.example.plantbuddy.plants.Fact
 import com.example.plantbuddy.screens.FactDetails
 import com.example.plantbuddy.screens.HomeScreen
 import com.example.plantbuddy.screens.PlantDetailScreen
+import com.example.plantbuddy.screens.SavedFactsScreen
 import com.example.plantbuddy.screens.SplashScreen
 
 
@@ -34,6 +37,10 @@ fun RootNav(innerPadding: PaddingValues) {
             HomeScreen(mainNavController = mainNavController)
         }
 
+        composable(Screens.CameraScreen.route){
+            CameraScreen(mainNavController)
+        }
+
         composable("fact_detail") {
 
             val fact =
@@ -44,6 +51,10 @@ fun RootNav(innerPadding: PaddingValues) {
             if (fact != null) {
                 FactDetails(fact)
             }
+        }
+
+        composable(Screens.SavedFactsScreen.route){
+            SavedFactsScreen(mainNavController = mainNavController)
         }
 
 

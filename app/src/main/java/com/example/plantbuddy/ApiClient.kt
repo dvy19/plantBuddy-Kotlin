@@ -1,6 +1,7 @@
 package com.example.plantbuddy
 
 import com.example.plantbuddy.plants.PlantInterface
+import com.example.plantbuddy.weather.WeatherApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,6 +17,17 @@ object ApiClient {
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    private const val WEATHER_BASE_URL="https://api.openweathermap.org/"
+
+    val weatherApiService:WeatherApi by lazy {
+
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(WeatherApi::class.java)
     }
 
 
