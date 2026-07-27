@@ -66,11 +66,13 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.plantbuddy.Screens
 import com.example.plantbuddy.component.HomeCategoryCard
+import com.example.plantbuddy.component.HomeWeatherCard
 import com.example.plantbuddy.component.PlantFactCard
 import com.example.plantbuddy.plants.GetAllPlantsState
 import com.example.plantbuddy.plants.GetFactState
 import com.example.plantbuddy.plants.PlantRepo
 import com.example.plantbuddy.plants.PlantViewModel
+import com.example.plantbuddy.weather.WeatherViewModel
 import kotlinx.coroutines.launch
 
 // Model for grid items
@@ -92,6 +94,8 @@ fun HomeScreen(mainNavController: NavController) {
     val repo=PlantRepo()
 
     val viewModel = PlantViewModel()
+
+
 
     val state by viewModel.getPlantsState.collectAsState()
 
@@ -200,6 +204,12 @@ fun HomeScreen(mainNavController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // Featured Cities Section
+
+                item{
+                    HomeWeatherCard(
+                        onClick = {}
+                    )
+                }
 
                when(factState){
                    is GetFactState.Idle -> {
