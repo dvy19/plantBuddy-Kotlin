@@ -13,10 +13,8 @@ class WeatherRepository {
 
         return ApiClient.weatherApiService.getWeather(
             city = city,
-            apiKey = BuildConfig.WEATHER_API_KEY
+            apiKey ="8267882bacb857c78cbec307780a8309"
         )
 
     }
-
-
 }

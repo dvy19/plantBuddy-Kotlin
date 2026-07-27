@@ -42,11 +42,8 @@ android {
 
 
 
-            buildConfigField(
-                "String",
-                "WEATHER_API_KEY",
-                "\"${project.findProperty("WEATHER_API_KEY")}\""
-            )
+
+       
 
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

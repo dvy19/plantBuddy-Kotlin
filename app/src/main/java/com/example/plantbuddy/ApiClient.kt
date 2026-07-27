@@ -24,7 +24,7 @@ object ApiClient {
     val weatherApiService:WeatherApi by lazy {
 
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(WEATHER_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(WeatherApi::class.java)

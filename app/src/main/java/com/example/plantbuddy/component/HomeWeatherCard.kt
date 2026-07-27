@@ -8,6 +8,7 @@ import androidx.compose.material.icons.rounded.Air
 import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.plantbuddy.weather.WeatherState
 import com.example.plantbuddy.weather.WeatherViewModel
 import okhttp3.internal.notify
@@ -36,9 +38,13 @@ fun HomeWeatherCard(
     modifier: Modifier = Modifier
 ) {
 
-    val weatherViewModel = WeatherViewModel()
+    val weatherViewModel: WeatherViewModel = viewModel()
 
     val weatherState by weatherViewModel.weatherState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        weatherViewModel.fetchWeather("Delhi")
+    }
 
     when(val state=weatherState){
         is WeatherState.Idle -> {
@@ -47,6 +53,7 @@ fun HomeWeatherCard(
         is WeatherState.Loading -> {
             Text("Loading")
             }
+
         is WeatherState.Success -> {
 
             val weatherData=state.data

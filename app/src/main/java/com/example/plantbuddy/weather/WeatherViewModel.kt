@@ -1,5 +1,6 @@
 package com.example.plantbuddy.weather
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,13 +25,21 @@ class WeatherViewModel : ViewModel() {
 
     fun fetchWeather(city: String) {
 
+        Log.d("WeatherVM", "fetchWeather called")
+
+
         viewModelScope.launch {
 
             _weatherState.value = WeatherState.Loading
 
             try {
 
+
                 val response = repository.getWeather(city)
+
+                Log.d("m", response.toString())
+
+                Log.d("m",response.isSuccessful.toString())
 
                 if (response.isSuccessful && response.body() != null) {
 
