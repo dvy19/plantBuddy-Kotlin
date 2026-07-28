@@ -69,6 +69,8 @@ fun RootNav(innerPadding: PaddingValues) {
             SavedFactsScreen(mainNavController = mainNavController)
         }
 
+
+
         composable(
             "add_note/{imagePath}"
         ) { backStackEntry ->

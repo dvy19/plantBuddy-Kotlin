@@ -46,4 +46,6 @@ sealed class Screens( var route:String){
 
     data object SavedPhotosScreen:Screens("saved_photos")
 
+    data object WishlistScreen:Screens("wishlist")
+
 }

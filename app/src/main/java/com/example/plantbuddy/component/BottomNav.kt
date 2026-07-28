@@ -72,7 +72,7 @@ fun BottomNav(
                 ) {
                     mainNavController.navigate(Screens.HomeScreen.route)
                 }
-
+/*
 
                 BottomItem(
                     icon = Icons.Default.Explore,
@@ -84,6 +84,8 @@ fun BottomNav(
                     }
                 }
 
+
+ */
 
 
             }

@@ -1,6 +1,7 @@
 package com.example.plantbuddy.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,7 +10,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.*
@@ -21,17 +25,33 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.plantbuddy.Screens
+import com.example.plantbuddy.component.FaqItem
+import com.example.plantbuddy.component.FaqScreenContainer
 import com.example.plantbuddy.plants.GetSinglePlantState
 import com.example.plantbuddy.plants.Plant
 import com.example.plantbuddy.plants.PlantRepo
 import com.example.plantbuddy.plants.PlantViewModel
+import com.example.plantbuddy.room.DatabaseProvider
+import com.example.plantbuddy.room.SavedFactRepository
+import com.example.plantbuddy.room.SavedFactViewModel
+import com.example.plantbuddy.room.SavedViewModelFac
+import com.example.plantbuddy.room.wishlist.PlantEntity
+import com.example.plantbuddy.room.wishlist.PlantRoomRepo
+import com.example.plantbuddy.room.wishlist.PlantRoomViewModel
+import com.example.plantbuddy.room.wishlist.PlantRoomViewModelFact
+import com.example.plantbuddy.room.wishlist.SavedPlantState
+
 
 // --- Custom Theme Colors ---
 private val ForestGreen = Color(0xFF1B4332)
@@ -55,6 +75,38 @@ fun PlantDetailScreen(
     val repo=PlantRepo()
 
     val viewModel : PlantViewModel = viewModel()
+
+
+    val sampleFaqs = listOf(
+        FaqItem(
+            id = 1,
+            question = "Give me 5 facts about this plant. ",
+            answer=""
+        ),
+        FaqItem(
+            id = 2,
+            question = "How to take care of this plant?",
+            answer = ""
+        )
+
+    )
+
+    var selectedFaq by remember {
+        mutableStateOf<FaqItem?>(null)
+    }
+
+
+    val context = LocalContext.current
+
+    val plantRoomViewModel: PlantRoomViewModel = viewModel(
+        factory = remember(context) {
+            val database = DatabaseProvider.getDatabase(context.applicationContext)
+            val repository = PlantRoomRepo(database.plantDao())
+            PlantRoomViewModelFact(repository)
+        }
+    )
+
+    val savePlantState by plantRoomViewModel.savePlantState.collectAsState()
 
 
     Log.d("m",plant_id.toString())
@@ -88,10 +140,14 @@ fun PlantDetailScreen(
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = {},
+                        title = {
+                            Text("Plant Details")
+                        },
                         navigationIcon = {
                             IconButton(
-                                onClick = onBackClick,
+                                onClick = {
+                                    mainNavController.popBackStack()
+                                },
                                 modifier = Modifier
                                     .padding(8.dp)
                                     .background(SurfaceWhite.copy(alpha = 0.8f), CircleShape)
@@ -102,10 +158,48 @@ fun PlantDetailScreen(
                                     tint = TextDark
                                 )
                             }
+
+
                         },
+
                         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
                     )
                 },
+                floatingActionButton = {
+                    FloatingActionButton(onClick = {
+                        plantRoomViewModel.savePlantOffline(
+                            plant= PlantEntity(
+                                id = plant.id,
+                                name = plant.name,
+                                image_url = plant.image_url,
+                                description = plant.description,
+                                homePlace = "home",
+                                type = plant.plant_type.name
+
+                            )
+                        )
+                    }) {
+                        when(savePlantState){
+                            is SavedPlantState.Loading -> CircularProgressIndicator()
+                            is SavedPlantState.Success -> Icon(imageVector = Icons.Default.Bookmark, contentDescription = "Save Offline")
+                            is SavedPlantState.Error -> {
+                                Icon(imageVector = Icons.Default.BookmarkBorder, contentDescription = "Save Offline")
+                            }
+                            else -> Icon(imageVector = Icons.Default.BookmarkBorder, contentDescription = "Save Offline")
+                        }
+
+                        LaunchedEffect(savePlantState) {
+                            if (savePlantState is SavedPlantState.Error) {
+                                Toast.makeText(
+                                    context,
+                                    "Save Failed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                },
+                /*
                 bottomBar = {
                     // Sticky Save Offline Button
                     Surface(
@@ -119,7 +213,9 @@ fun PlantDetailScreen(
                                 .navigationBarsPadding()
                         ) {
                             Button(
-                                onClick = { onSaveOfflineClick(plant) },
+                                onClick = {
+
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(54.dp),
@@ -144,6 +240,8 @@ fun PlantDetailScreen(
                         }
                     }
                 }
+
+                 */
             ) { innerPadding ->
                 Column(
                     modifier = Modifier
@@ -312,6 +410,43 @@ fun PlantDetailScreen(
                             plant.fruiting_season?.let {
                                 DetailRow("Fruiting Season", it.name)
                             }
+
+                            FaqScreenContainer(
+                                faqList = sampleFaqs,
+                                modifier = Modifier.padding(horizontal = 20.dp),
+                                onFaqClick = {
+                                    selectedFaq = it
+                                }
+                            )
+
+                            if (selectedFaq != null) {
+
+                                AlertDialog(
+                                    onDismissRequest = {
+                                        selectedFaq = null
+                                    },
+
+                                    title = {
+                                        Text(selectedFaq!!.question)
+                                    },
+
+                                    text = {
+                                        Text(selectedFaq!!.answer)
+                                    },
+
+                                    confirmButton = {
+
+                                        TextButton(
+                                            onClick = {
+                                                selectedFaq = null
+                                            }
+                                        ) {
+                                            Text("Close")
+                                        }
+
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -328,6 +463,8 @@ fun PlantDetailScreen(
 
     }
 }
+
+
 
 @Composable
 private fun QuickBadge(label: String, icon: ImageVector) {
@@ -421,3 +558,4 @@ private fun DetailRow(label: String, value: String) {
     }
     HorizontalDivider(color = SoftBackground, thickness = 1.dp)
 }
+

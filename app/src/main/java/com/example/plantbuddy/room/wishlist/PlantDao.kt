@@ -13,7 +13,7 @@ interface PlantDao{
     suspend fun insertPlant(plant:PlantEntity)
 
     @Query("SELECT * FROM saved_plants")
-    suspend fun getAllPlants():Flow<List<PlantEntity>>
+    fun getAllPlants():Flow<List<PlantEntity>>
 
 
 }
