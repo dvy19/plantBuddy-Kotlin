@@ -35,6 +35,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.plantbuddy.FAQRetrofit.FaqRequest
+import com.example.plantbuddy.FAQRetrofit.FaqViewModel
+import com.example.plantbuddy.FAQRetrofit.GetFaqState
 import com.example.plantbuddy.Screens
 import com.example.plantbuddy.component.FaqItem
 import com.example.plantbuddy.component.FaqScreenContainer
@@ -75,18 +78,24 @@ fun PlantDetailScreen(
     val repo=PlantRepo()
 
     val viewModel : PlantViewModel = viewModel()
+    val faqViewModel: FaqViewModel=viewModel()
+
+    val faqState by faqViewModel.getFaqState.collectAsState()
+
+
+
 
 
     val sampleFaqs = listOf(
         FaqItem(
             id = 1,
             question = "Give me 5 facts about this plant. ",
-            answer=""
+
         ),
         FaqItem(
             id = 2,
             question = "How to take care of this plant?",
-            answer = ""
+
         )
 
     )
@@ -416,6 +425,13 @@ fun PlantDetailScreen(
                                 modifier = Modifier.padding(horizontal = 20.dp),
                                 onFaqClick = {
                                     selectedFaq = it
+
+                                    faqViewModel.getFaq(
+                                        request = FaqRequest(
+                                            question_id = it.id,
+                                            plant_id = plant.id
+                                        )
+                                    )
                                 }
                             )
 
@@ -431,7 +447,28 @@ fun PlantDetailScreen(
                                     },
 
                                     text = {
-                                        Text(selectedFaq!!.answer)
+                                        when(faqState){
+
+                                            is GetFaqState.Idle -> {
+                                                Text("Idle")
+                                            }
+                                            is GetFaqState.Loading -> {
+                                                Text("Loading")
+
+                                            }
+
+                                            is GetFaqState.Success -> {
+                                                val faqData=(faqState as GetFaqState.Success).data
+                                                //Log.d("m",data.toString())
+
+                                                Text(faqData.answer)
+                                            }
+
+                                            is GetFaqState.Error -> {
+
+                                            }
+
+                                        }
                                     },
 
                                     confirmButton = {

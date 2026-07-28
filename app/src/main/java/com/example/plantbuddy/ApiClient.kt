@@ -1,5 +1,6 @@
 package com.example.plantbuddy
 
+import com.example.plantbuddy.FAQRetrofit.FaqApiInterface
 import com.example.plantbuddy.plants.PlantInterface
 import com.example.plantbuddy.weather.WeatherApi
 import okhttp3.OkHttpClient
@@ -43,6 +44,10 @@ object ApiClient {
 
     val getFactApi: PlantInterface by lazy{
         retrofit.create(PlantInterface::class.java)
+    }
+
+    val getFaq: FaqApiInterface by lazy{
+        retrofit.create(FaqApiInterface::class.java)
     }
 
 

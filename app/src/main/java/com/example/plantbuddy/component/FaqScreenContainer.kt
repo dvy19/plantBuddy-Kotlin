@@ -37,8 +37,7 @@ val SurfaceWhite = Color(0xFFFFFFFF)
 
 data class FaqItem(
     val id: Int,
-    val question: String,
-    val answer: String
+    val question: String
 
 )
 
