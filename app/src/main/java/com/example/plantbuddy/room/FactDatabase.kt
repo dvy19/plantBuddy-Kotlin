@@ -6,22 +6,25 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.plantbuddy.room.photo.OfflinePicEntity
 import com.example.plantbuddy.room.photo.PicDao
+import com.example.plantbuddy.room.wishlist.PlantDao
+import com.example.plantbuddy.room.wishlist.PlantEntity
 
 
 @Database(
     entities = [
         SavedFact::class,
-        OfflinePicEntity::class
-
-
+        OfflinePicEntity::class,
+        PlantEntity::class
                ],
-    version = 3
+    version = 4
 )
 abstract class FactDatabase : RoomDatabase() {
 
     abstract fun savedFactDao(): FactDao
 
     abstract fun picDao(): PicDao
+
+    abstract fun plantDao():PlantDao
 }
 
 object DatabaseProvider {

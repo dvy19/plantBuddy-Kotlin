@@ -3,6 +3,8 @@ package com.example.plantbuddy
 
 import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.plantbuddy.camera.AddNoteScreen
 import com.example.plantbuddy.camera.CameraScreen
+import com.example.plantbuddy.component.BottomNav
 import com.example.plantbuddy.plants.Fact
 import com.example.plantbuddy.screens.FactDetails
 import com.example.plantbuddy.screens.HomeScreen
@@ -26,8 +29,13 @@ import com.example.plantbuddy.screens.SplashScreen
 @Composable
 fun RootNav(innerPadding: PaddingValues) {
     val mainNavController = rememberNavController()
-
-    NavHost(
+    Scaffold(
+        bottomBar = {
+            BottomNav(mainNavController)
+        }
+    ) { paddingValues ->
+        NavHost(
+            modifier = Modifier.padding(paddingValues),
         navController = mainNavController,
         startDestination = Screens.HomeScreen.route
     ) {
@@ -101,4 +109,5 @@ fun RootNav(innerPadding: PaddingValues) {
 
 
     }
-}
+}}
+

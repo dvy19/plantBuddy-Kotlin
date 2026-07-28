@@ -31,6 +31,7 @@ import androidx.compose.material.icons.outlined.Bed
 import androidx.compose.material.icons.outlined.Countertops // Kitchen icon
 import androidx.compose.material.icons.outlined.Living
 import androidx.compose.material.icons.outlined.Shower
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -54,6 +55,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -266,71 +268,94 @@ fun HomeScreen(mainNavController: NavController) {
 
                     }
 
-                    when (state) {
 
-                        is GetAllPlantsState.Idle -> {
-                            item {
-                                Text("Idle")
-                            }
+                when (val currentState = state) {
 
+                    is GetAllPlantsState.Idle -> {
+
+                        item {
+                            CircularProgressIndicator(
+                                modifier = Modifier.padding(16.dp)
+                            )
                         }
-
-                        is GetAllPlantsState.Loading -> {
-
-                            item {
-                                Text("Loading")
-                            }
-                        }
-
-
-                        is GetAllPlantsState.Success -> {
-
-                            val plants = (state as GetAllPlantsState.Success).data
-
-                            items(
-                                items =plants,
-                                key = { it.id }
-                            ) { plants ->
-
-                                PlantCard(
-
-                                    onClick= {
-
-                                        mainNavController.navigate("plant_detail/${plants.id}")
-
-                                        Log.d("m", "Clicked on ${plants.name}")
-                                        Log.d("m", "Clicked on ${plants.id}")
-
-
-                                    },
-                                    imageUrl = plants.image_url,
-                                    name = plants.name,
-                                    type = plants.plant_type.name,
-                                    scientificName = plants.scientific_name,
-                                    lifespan = plants.lifespan.name
-
-                                )
-
-                            }
-
-                        }
-
-                        is GetAllPlantsState.Error -> {
-
-                            Log.d("m" , (state as GetAllPlantsState.Error).message)
-
-                            item {
-                                Text(
-                                    "Failed to load plants",
-                                    modifier = Modifier.padding(12.dp)
-                                    )
-                            }
-
-                        }
-
-                        else -> {}
 
                     }
+
+                    is GetAllPlantsState.Loading -> {
+
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+
+                    }
+
+                    is GetAllPlantsState.Success -> {
+
+                        items(
+                            items = currentState.data,
+                            key = { it.id }
+                        ) { plant ->
+
+                            PlantCard(
+                                onClick = {
+                                    mainNavController.navigate("plant_detail/${plant.id}")
+                                },
+                                imageUrl = plant.image_url,
+                                name = plant.name,
+                                type = plant.plant_type.name,
+                                scientificName = plant.scientific_name,
+                                lifespan = plant.lifespan.name
+                            )
+
+                        }
+
+                        if (currentState.next != null) {
+
+                            item {
+
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                    onClick = {
+
+                                        viewModel.loadNextPage()
+
+                                    }
+                                ) {
+
+                                    Text("Load More")
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    is GetAllPlantsState.Error -> {
+
+                        item {
+
+                            Text(
+                                text = currentState.message,
+                                color = Color.Red,
+                                modifier = Modifier.padding(16.dp)
+                            )
+
+                        }
+
+                    }
+
+                }
 
 
 

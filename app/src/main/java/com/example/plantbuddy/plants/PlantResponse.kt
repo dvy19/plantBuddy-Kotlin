@@ -4,7 +4,18 @@ import android.os.Parcelable
 
 import kotlinx.parcelize.Parcelize
 
+
+data class PlantPageResponse(
+    val count: Int,
+
+    val next: String?,
+
+    val previous: String?,
+    val results: PlantsResponse
+)
+
 data class PlantsResponse(
+
     val message: String,
     val data: List<Plant>
 )
@@ -18,6 +29,7 @@ data class Plant(
     val growth_rate: PlantAttribute,
     val lifespan: PlantAttribute,
     val soil_type: PlantAttribute,
+    val homePlace:PlantAttribute,
     val best_planting_season: PlantAttribute,
     val flowering_season: PlantAttribute?,
     val fruiting_season: PlantAttribute?,
@@ -36,7 +48,8 @@ data class Plant(
     val edible: Boolean,
     val image_url: String,
     val created_at: String,
-    val updated_at: String
+    val updated_at: String,
+
 )
 
 data class SinglePlantResponse(

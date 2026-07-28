@@ -12,7 +12,13 @@ import kotlinx.coroutines.launch
 sealed class GetAllPlantsState {
     object Idle: GetAllPlantsState()
     object Loading: GetAllPlantsState()
-    data class Success( val data: List<Plant>): GetAllPlantsState()
+    data class Success(
+        val data: List<Plant>,
+        val count: Int,
+        val next: String?,
+        val previous: String?
+
+    ): GetAllPlantsState()
     data class Error(val message:String): GetAllPlantsState()
 }
 
@@ -50,18 +56,27 @@ class PlantViewModel() : ViewModel(){
     val getSinglePlantState: StateFlow<GetSinglePlantState> = _getSinglePlantState.asStateFlow()
 
 
+    private var currentPage = 1
+
+    private var hasNextPage = true
+
+    private val allPlants = mutableListOf<Plant>()
 
     private val repo = PlantRepo()
 
-    fun getAllPlants(){
+    fun getAllPlants(page:Int=1){
 
         viewModelScope.launch{
 
-            _getPlantsState.value = GetAllPlantsState.Loading
+            if (page == 1) {
+                _getPlantsState.value = GetAllPlantsState.Loading
+                allPlants.clear()
+            }
+
 
             try{
 
-                val response = repo.get_all_plants()
+                val response = repo.get_all_plants(page)
 
                 /*
                 Log.d("m", response.body().toString())
@@ -79,8 +94,23 @@ class PlantViewModel() : ViewModel(){
                  */
 
 
-                if ( response.body()!=null && response.isSuccessful){
-                    _getPlantsState.value = GetAllPlantsState.Success(response.body()!!.data)
+                if (response.isSuccessful && response.body() != null) {
+
+                    val body = response.body()!!
+
+                    currentPage = page
+
+                    hasNextPage = body.next != null
+
+                    // Append instead of replace
+                    allPlants.addAll(body.results.data)
+
+                    _getPlantsState.value = GetAllPlantsState.Success(
+                        data = allPlants.toList(),
+                        count = body.count,
+                        next = body.next,
+                        previous = body.previous
+                    )
                 }else{
                     Log.d("m", getPlantsState.value.toString())
 
@@ -103,6 +133,15 @@ class PlantViewModel() : ViewModel(){
             }
 
         }
+    }
+
+    fun loadNextPage() {
+
+        if (!hasNextPage)
+            return
+
+        getAllPlants(currentPage + 1)
+
     }
 
     fun getFact(){
