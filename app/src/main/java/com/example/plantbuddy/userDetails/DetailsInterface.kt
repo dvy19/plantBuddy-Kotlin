@@ -15,7 +15,7 @@ interface DetailsInterface {
         @Body request: UserDetailReq
     ): Response<UserDetailResponse>
 
-    @GET("api/accounts/profile/")
+    @GET("api/accounts/create-profile/")
     suspend fun getProfile(
         @Header("Authorization") token: String
     ): Response<UserDetailResponse>

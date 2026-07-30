@@ -4,6 +4,7 @@ import com.example.plantbuddy.FAQRetrofit.FaqApiInterface
 import com.example.plantbuddy.auth.AuthInterface
 import com.example.plantbuddy.plants.PlantInterface
 import com.example.plantbuddy.userDetails.DetailsInterface
+import com.example.plantbuddy.waterStreak.WaterInterface
 import com.example.plantbuddy.weather.WeatherApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -63,6 +64,11 @@ object ApiClient {
 
     val detailApi: DetailsInterface by lazy{
         retrofit.create(DetailsInterface::class.java)
+    }
+
+    val waterLogApi: WaterInterface by lazy{
+        retrofit.create(WaterInterface::class.java)
+
     }
 
 

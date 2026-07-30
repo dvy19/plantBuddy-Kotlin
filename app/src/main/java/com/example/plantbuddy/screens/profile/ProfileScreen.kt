@@ -1,6 +1,7 @@
 package com.example.plantbuddy.screens.profile
 
 import android.se.omapi.Session
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -54,22 +55,25 @@ import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.RegisterState
 import com.example.plantbuddy.auth.SessionManager
 import com.example.plantbuddy.auth.SignupRequest
+import com.example.plantbuddy.userDetails.DetailViewModel
+import com.example.plantbuddy.userDetails.GetProfileState
+import com.example.plantbuddy.userDetails.GetProfileState.Idle
+import com.example.plantbuddy.userDetails.UserDetailRepo
 
 @Composable
 fun UserProfileScreenLayout(
     mainNavController: NavController
 
 ) {
-
-
-
-
     val context=LocalContext.current
     val sessionManager= SessionManager(context)
 
     val accessToken=sessionManager.getAccessToken()
 
-
+    val repo= UserDetailRepo(sessionManager)
+    val viewModel= DetailViewModel(repo)
+    val getProfileState by viewModel.getProfileState.collectAsState()
+    Log.d("maccess token",accessToken.toString())
     if(accessToken==null){
 
         LandingScreen(
@@ -84,11 +88,57 @@ fun UserProfileScreenLayout(
     }
     else{
 
-        ProfileScreen(
-            userCity = "kanpur",
-            userName = "jaskirat",
-            userEmail = "none"
-        )
+        LaunchedEffect(Unit) {
+            Log.d("Compose", "Calling API")
+            viewModel.getUserProfile()
+
+        }
+
+        Log.d("m",getProfileState.toString())
+
+        when(getProfileState){
+
+
+            is GetProfileState.Idle -> {
+                Log.d("m",getProfileState.toString())
+
+
+            }
+            is GetProfileState.Loading -> {
+                Log.d("m",getProfileState.toString())
+
+                CircularProgressIndicator()
+            }
+            is GetProfileState.Success -> {
+                Log.d("m",getProfileState.toString())
+
+                val userdata=(getProfileState as GetProfileState.Success).data
+
+                ProfileScreen(
+                    userCity = userdata.city,
+                    userName =userdata.name,
+                    userEmail = "NA",
+
+                    onLogoutClick = {
+                        sessionManager.logout()
+                    }
+                )
+
+            }
+
+            is GetProfileState.Error -> {
+                Log.d("m",getProfileState.toString())
+
+                Text((getProfileState as GetProfileState.Error).message)
+            }
+
+        }
+
+
+
+
+
+
 
 
 

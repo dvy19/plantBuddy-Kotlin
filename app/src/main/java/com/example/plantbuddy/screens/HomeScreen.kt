@@ -69,6 +69,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.plantbuddy.Screens
+import com.example.plantbuddy.auth.SessionManager
 import com.example.plantbuddy.component.HomeCategoryCard
 import com.example.plantbuddy.component.HomeWeatherCard
 import com.example.plantbuddy.component.PlantFactCard
@@ -101,6 +102,8 @@ fun HomeScreen(mainNavController: NavController) {
     )
 
     val context= LocalContext.current
+
+    val sessionManager=SessionManager(context)
 
 
 // Wrap in remember so we don't recreate instances on every frame/recomposition
@@ -165,10 +168,11 @@ fun HomeScreen(mainNavController: NavController) {
                 )
 
                 NavigationDrawerItem(
-                    label = { Text("Saved Photos") },
+                    label = { Text("logout") },
                     selected = false,
+
                     onClick = {
-                        mainNavController.navigate(Screens.SavedPhotosScreen.route)
+                        sessionManager.logout()
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )

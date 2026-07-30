@@ -1,6 +1,7 @@
 package com.example.plantbuddy
 
 
+import WaterStreakScreen
 import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,6 @@ import com.example.plantbuddy.screens.SavedPhotosScreen
 import com.example.plantbuddy.screens.SplashScreen
 import com.example.plantbuddy.screens.profile.UserProfileScreenLayout
 import com.example.plantbuddy.userDetails.UserDetailsScreen
-import com.example.plantbuddy.waterStreak.WaterStreakScreen
 
 
 @Composable
@@ -70,7 +70,7 @@ fun RootNav(innerPadding: PaddingValues) {
             }
 
             composable(Screens.WaterStreakScreen.route){
-                WaterStreakScreen(mainNavController)
+                WaterStreakScreen(mainNavController , plantId = 3  )
             }
 
         composable("splash") {
