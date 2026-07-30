@@ -48,4 +48,11 @@ sealed class Screens( var route:String){
 
     data object WishlistScreen:Screens("wishlist")
 
+    data object SignupScreen:Screens("signup")
+
+    data object LoginScreen:Screens("login")
+
+
+    data object UserProfileScreenLayout:Screens("profile-layout")
+
 }

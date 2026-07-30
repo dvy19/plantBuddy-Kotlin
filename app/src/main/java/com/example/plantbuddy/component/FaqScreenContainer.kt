@@ -1,5 +1,6 @@
 package com.example.plantbuddy.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -49,6 +50,7 @@ fun FaqScreenContainer(
     faqList: List<FaqItem>,
     modifier: Modifier = Modifier,
     onFaqClick: (FaqItem) -> Unit
+
 ) {
     // Tracks currently expanded card ID (-1 means none open)
     var expandedFaqId by remember { mutableStateOf<Int?>(null) }
@@ -75,7 +77,8 @@ fun FaqScreenContainer(
                     isExpanded = isExpanded,
                     onToggleExpand = {
                         expandedFaqId = if (isExpanded) null else faq.id
-                    }
+                    },
+                    onFaqClick = onFaqClick
                 )
             }
         }
@@ -87,7 +90,8 @@ fun FaqCard(
     faq: FaqItem,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onFaqClick: (FaqItem) -> Unit
 ) {
     // Arrow rotation transition
     val rotationState by animateFloatAsState(
@@ -99,6 +103,11 @@ fun FaqCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .clickable{
+                Log.d("FAQ", "Card clicked")
+                onToggleExpand()
+                onFaqClick(faq)
+            }
             .animateContentSize(
                 animationSpec = tween(
                     durationMillis = 300,
@@ -120,10 +129,6 @@ fun FaqCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null // Clean tap ripple without distraction
-                ) { onToggleExpand() }
                 .padding(horizontal = 20.dp, vertical = 18.dp)
         ) {
             Row(

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
@@ -72,20 +73,31 @@ fun BottomNav(
                 ) {
                     mainNavController.navigate(Screens.HomeScreen.route)
                 }
-/*
+
 
                 BottomItem(
                     icon = Icons.Default.Explore,
-                    selected = currentRoute == Screens.ExploreScreen.route
+                    selected = currentRoute == Screens.WishlistScreen.route
                 ) {
-                    mainNavController.navigate(Screens.ExploreScreen.route) {
+                    mainNavController.navigate(Screens.WishlistScreen.route) {
                         popUpTo(mainNavController.graph.startDestinationId)
                         launchSingleTop = true
                     }
                 }
 
 
- */
+                BottomItem(
+                    icon = Icons.Default.AccountCircle,
+                    selected = currentRoute == Screens.UserProfileScreenLayout.route
+                ) {
+                    mainNavController.navigate(Screens.UserProfileScreenLayout.route) {
+                        popUpTo(mainNavController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
+                }
+
+
+
 
 
             }

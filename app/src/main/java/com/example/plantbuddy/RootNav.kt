@@ -24,6 +24,7 @@ import com.example.plantbuddy.screens.PlantDetailScreen
 import com.example.plantbuddy.screens.SavedFactsScreen
 import com.example.plantbuddy.screens.SavedPhotosScreen
 import com.example.plantbuddy.screens.SplashScreen
+import com.example.plantbuddy.screens.profile.UserProfileScreenLayout
 
 
 @Composable
@@ -40,6 +41,10 @@ fun RootNav(innerPadding: PaddingValues) {
         startDestination = Screens.HomeScreen.route
     ) {
 
+
+            composable(Screens.UserProfileScreenLayout.route){
+                UserProfileScreenLayout(mainNavController)
+            }
 
         composable("splash") {
             SplashScreen(mainNavController)

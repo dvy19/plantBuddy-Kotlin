@@ -1,5 +1,6 @@
 package com.example.plantbuddy.FAQRetrofit
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,15 @@ class FaqViewModel():ViewModel(){
 
             try{
                 val response=repo.getPlantFaq(request)
+
+                Log.d("m",response.toString())
+                Log.d("m",response.body().toString())
+                Log.d("m",response.isSuccessful.toString())
+                Log.d("m",response.code().toString())
+                Log.d("m",response.message())
+                Log.d("m",response.errorBody().toString())
+
+
 
                 if(response.isSuccessful && response.body()!=null){
 

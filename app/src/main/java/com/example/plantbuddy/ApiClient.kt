@@ -1,7 +1,9 @@
 package com.example.plantbuddy
 
 import com.example.plantbuddy.FAQRetrofit.FaqApiInterface
+import com.example.plantbuddy.auth.AuthInterface
 import com.example.plantbuddy.plants.PlantInterface
+import com.example.plantbuddy.userDetails.DetailsInterface
 import com.example.plantbuddy.weather.WeatherApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -48,6 +50,19 @@ object ApiClient {
 
     val getFaq: FaqApiInterface by lazy{
         retrofit.create(FaqApiInterface::class.java)
+    }
+
+
+    val registerApi: AuthInterface by lazy{
+        retrofit.create(AuthInterface::class.java)
+    }
+
+    val loginApi: AuthInterface by lazy{
+        retrofit.create(AuthInterface::class.java)
+    }
+
+    val detailApi: DetailsInterface by lazy{
+        retrofit.create(DetailsInterface::class.java)
     }
 
 
