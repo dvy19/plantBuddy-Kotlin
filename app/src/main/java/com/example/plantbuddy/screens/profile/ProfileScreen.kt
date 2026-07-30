@@ -1,6 +1,8 @@
 package com.example.plantbuddy.screens.profile
 
 import android.se.omapi.Session
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,18 +21,27 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.plantbuddy.auth.AuthViewModel
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Park
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -59,19 +70,33 @@ fun UserProfileScreenLayout(
     val accessToken=sessionManager.getAccessToken()
 
 
-    LandingScreen(
-        onEnterClick = {
-            mainNavController.navigate(Screens.RegisterScreen.route)
-        },
-        onCreateAccountClick = {
-            mainNavController.navigate(Screens.LoginScreen.route)
-        }
+    if(accessToken==null){
 
-            )
+        LandingScreen(
+            onEnterClick = {
+                mainNavController.navigate(Screens.RegisterScreen.route)
+            },
+            onCreateAccountClick = {
+                mainNavController.navigate(Screens.LoginScreen.route)
+            }
+
+        )
+    }
+    else{
+
+        ProfileScreen(
+            userCity = "kanpur",
+            userName = "jaskirat",
+            userEmail = "none"
+        )
+
+
+
+    }
 
 }
 
-/*
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -243,7 +268,7 @@ private fun ProfileMenuItem(
     }
 }
 
- */
+
 
 
 

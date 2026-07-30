@@ -57,4 +57,5 @@ sealed class Screens( var route:String){
 
     data object UserDetailsScreen:Screens("profile")
 
+    data object WaterStreakScreen:Screens("water_streak")
 }

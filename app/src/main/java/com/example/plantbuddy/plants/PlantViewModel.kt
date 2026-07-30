@@ -3,6 +3,7 @@ package com.example.plantbuddy.plants
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.plantbuddy.room.DatabaseProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,7 +36,11 @@ sealed class GetSinglePlantState{
     data class Success(val data: Plant): GetSinglePlantState()
     data class Error(val message:String): GetSinglePlantState()
 }
-class PlantViewModel() : ViewModel(){
+class PlantViewModel(
+    private val repo :PlantRepo
+
+
+) : ViewModel() {
 
     private val _getPlantsState = MutableStateFlow<GetAllPlantsState>(
         GetAllPlantsState.Idle
@@ -62,11 +67,10 @@ class PlantViewModel() : ViewModel(){
 
     private val allPlants = mutableListOf<Plant>()
 
-    private val repo = PlantRepo()
 
-    fun getAllPlants(page:Int=1){
+    fun getAllPlants(page: Int = 1) {
 
-        viewModelScope.launch{
+        viewModelScope.launch {
 
             if (page == 1) {
                 _getPlantsState.value = GetAllPlantsState.Loading
@@ -74,7 +78,7 @@ class PlantViewModel() : ViewModel(){
             }
 
 
-            try{
+            try {
 
                 val response = repo.get_all_plants(page)
 
@@ -111,7 +115,7 @@ class PlantViewModel() : ViewModel(){
                         next = body.next,
                         previous = body.previous
                     )
-                }else{
+                } else {
                     Log.d("m", getPlantsState.value.toString())
 
 
@@ -124,10 +128,8 @@ class PlantViewModel() : ViewModel(){
                 }
 
 
-                }
-            catch (e:Exception){
+            } catch (e: Exception) {
                 _getPlantsState.value = GetAllPlantsState.Error(e.message.toString())
-
 
 
             }
@@ -144,32 +146,17 @@ class PlantViewModel() : ViewModel(){
 
     }
 
-    fun getFact(){
+    fun getFact() {
 
         viewModelScope.launch {
 
             _getFactState.value = GetFactState.Loading
 
-            try{
-                val response = repo.get_plant_fact()
-                Log.d("m", response.body().toString())
-                Log.d("m", response.message())
-
-                Log.d("m", response.code().toString())
-                Log.d("m", response.isSuccessful.toString())
-                Log.d("m", response.errorBody().toString())
-                Log.d("m", response.raw().toString())
-                if(response.body() != null && response.isSuccessful){
-                    _getFactState.value = GetFactState.Success(response.body()!!)
-                }else{
-                    _getFactState.value = GetFactState.Error( response.message() ?: "Failed to fetch posts")
-                    }
-            }
-            catch (e:Exception){
-                _getFactState.value = GetFactState.Error(e.message.toString()
-
-                )
-
+            try {
+                val response = repo.getPlantFact()
+                _getFactState.value = GetFactState.Success(response)
+            } catch (e: Exception) {
+                _getFactState.value = GetFactState.Error(e.message.toString())
             }
         }
 

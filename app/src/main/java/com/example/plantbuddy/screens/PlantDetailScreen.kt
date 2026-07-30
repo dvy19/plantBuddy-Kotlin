@@ -44,6 +44,7 @@ import com.example.plantbuddy.component.FaqScreenContainer
 import com.example.plantbuddy.plants.GetSinglePlantState
 import com.example.plantbuddy.plants.Plant
 import com.example.plantbuddy.plants.PlantRepo
+import com.example.plantbuddy.plants.PlantVMFac
 import com.example.plantbuddy.plants.PlantViewModel
 import com.example.plantbuddy.room.DatabaseProvider
 import com.example.plantbuddy.room.SavedFactRepository
@@ -75,9 +76,18 @@ fun PlantDetailScreen(
 ) {
     var isLiked by remember { mutableStateOf(false) }
 
-    val repo=PlantRepo()
+    val context= LocalContext.current
 
-    val viewModel : PlantViewModel = viewModel()
+
+// Wrap in remember so we don't recreate instances on every frame/recomposition
+    val viewModel: PlantViewModel = viewModel(
+        factory = remember(context) {
+            val database = DatabaseProvider.getDatabase(context.applicationContext)
+            val repository = PlantRepo(database.dailyFactDao())
+            PlantVMFac(repository)
+        }
+    )
+
     val faqViewModel: FaqViewModel=viewModel()
 
     val faqState by faqViewModel.getFaqState.collectAsState()
@@ -105,7 +115,6 @@ fun PlantDetailScreen(
     }
 
 
-    val context = LocalContext.current
 
     val plantRoomViewModel: PlantRoomViewModel = viewModel(
         factory = remember(context) {

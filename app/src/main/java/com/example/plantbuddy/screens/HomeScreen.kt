@@ -58,11 +58,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -73,7 +75,12 @@ import com.example.plantbuddy.component.PlantFactCard
 import com.example.plantbuddy.plants.GetAllPlantsState
 import com.example.plantbuddy.plants.GetFactState
 import com.example.plantbuddy.plants.PlantRepo
+import com.example.plantbuddy.plants.PlantVMFac
 import com.example.plantbuddy.plants.PlantViewModel
+import com.example.plantbuddy.room.DatabaseProvider
+import com.example.plantbuddy.room.SavedFactRepository
+import com.example.plantbuddy.room.SavedFactViewModel
+import com.example.plantbuddy.room.SavedViewModelFac
 import com.example.plantbuddy.weather.WeatherViewModel
 import kotlinx.coroutines.launch
 
@@ -93,9 +100,17 @@ fun HomeScreen(mainNavController: NavController) {
         initialValue = DrawerValue.Closed
     )
 
-    val repo=PlantRepo()
+    val context= LocalContext.current
 
-    val viewModel = PlantViewModel()
+
+// Wrap in remember so we don't recreate instances on every frame/recomposition
+    val viewModel: PlantViewModel = viewModel(
+        factory = remember(context) {
+            val database = DatabaseProvider.getDatabase(context.applicationContext)
+            val repository = PlantRepo(database.dailyFactDao())
+            PlantVMFac(repository)
+        }
+    )
 
 
 
@@ -128,6 +143,16 @@ fun HomeScreen(mainNavController: NavController) {
                     selected = false,
                     onClick = {
                         mainNavController.navigate(Screens.SavedFactsScreen.route)
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+
+
+                NavigationDrawerItem(
+                    label = { Text("Water Streak") },
+                    selected = false,
+                    onClick = {
+                        mainNavController.navigate(Screens.WaterStreakScreen.route)
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )

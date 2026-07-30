@@ -28,6 +28,7 @@ import com.example.plantbuddy.screens.SavedPhotosScreen
 import com.example.plantbuddy.screens.SplashScreen
 import com.example.plantbuddy.screens.profile.UserProfileScreenLayout
 import com.example.plantbuddy.userDetails.UserDetailsScreen
+import com.example.plantbuddy.waterStreak.WaterStreakScreen
 
 
 @Composable
@@ -68,6 +69,9 @@ fun RootNav(innerPadding: PaddingValues) {
                 )
             }
 
+            composable(Screens.WaterStreakScreen.route){
+                WaterStreakScreen(mainNavController)
+            }
 
         composable("splash") {
             SplashScreen(mainNavController)
