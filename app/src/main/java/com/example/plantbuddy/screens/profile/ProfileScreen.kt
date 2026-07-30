@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.RegisterState
 import com.example.plantbuddy.auth.SessionManager
 import com.example.plantbuddy.auth.SignupRequest
@@ -58,19 +59,15 @@ fun UserProfileScreenLayout(
     val accessToken=sessionManager.getAccessToken()
 
 
-    if(accessToken==null){
+    LandingScreen(
+        onEnterClick = {
+            mainNavController.navigate(Screens.RegisterScreen.route)
+        },
+        onCreateAccountClick = {
+            mainNavController.navigate(Screens.LoginScreen.route)
+        }
 
-        LandingScreen(
-            onEnterClick = { mainNavController.navigate("login") },
-            onCreateAccountClick = { mainNavController.navigate("signup") }
-        )
-
-    }
-    else{
-
-
-
-    }
+            )
 
 }
 
@@ -339,134 +336,4 @@ fun LandingScreen(
         }
     }
 }
-
-@Composable
-fun RegisterScreen(
-    onRegisterClick: (email: String, pass: String) -> Unit,
-    onNavigateToLogin: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
-
-    val focusManager = LocalFocusManager.current
-
-    Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            // Header Title
-            Text(
-                text = "Create Account",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Email Input
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email Address") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Email,
-                        contentDescription = "Email Icon"
-                    )
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Password Input
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Password") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = "Password Icon"
-                    )
-                },
-                trailingIcon = {
-                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                        Icon(
-                            imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
-                        )
-                    }
-                },
-                singleLine = true,
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        onRegisterClick(email, password)
-                    }
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Submit Button
-            Button(
-                onClick = {
-                    focusManager.clearFocus()
-                    onRegisterClick(email, password)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text(
-                    text = "Register",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Navigation to Login
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Already have an account?",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                TextButton(onClick = onNavigateToLogin) {
-                    Text(
-                        text = "Log In",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-            }
-        }
-    }
-}
-
 

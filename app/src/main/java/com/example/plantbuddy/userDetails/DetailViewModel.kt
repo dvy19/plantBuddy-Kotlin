@@ -44,6 +44,14 @@ class DetailViewModel (
             try {
                 val response = repo.create_user_profile(request)
 
+                println(response)
+
+                println(response.body())
+
+                println(response.isSuccessful)
+
+                println(response.code())
+                println(response.errorBody())
                 if(response.isSuccessful && response.body()!=null){
 
                     _createProfileState.value = CreateProfileState.Success(response.body()!!.data)

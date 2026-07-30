@@ -1,5 +1,7 @@
-package com.example.plantbuddy.auth
+package com.example.plantbuddy.userDetails
 
+import com.example.plantbuddy.auth.AuthViewModel
+import com.example.plantbuddy.auth.SignupRequest
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +14,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -40,28 +44,28 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.plantbuddy.Screens
+import com.example.plantbuddy.auth.SessionManager
 import com.example.plantbuddy.userDetails.DetailViewModel
 import com.example.plantbuddy.userDetails.UserDetailRepo
 
 
 @Composable
-fun RegisterScreen(
+fun UserDetailsScreen(
     mainNavController: NavController,
-    onNavigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf("") }
+    var city by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
 
-    val viewModel: AuthViewModel  = viewModel()
+    val context=LocalContext.current
 
-    val registerState by viewModel.registerState.collectAsState()
+    val repo= UserDetailRepo(sessionManager = SessionManager(context))
 
+    val viewModel= DetailViewModel(repo)
 
-
+    val createProfileState by viewModel.createProfileState.collectAsState()
 
 
 
@@ -79,7 +83,7 @@ fun RegisterScreen(
         ) {
             // Header Title
             Text(
-                text = "Create Account",
+                text = "Create Your Profile",
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -88,12 +92,12 @@ fun RegisterScreen(
 
             // Email Input
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email Address") },
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Name ") },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Email,
+                        imageVector = Icons.Default.Person,
                         contentDescription = "Email Icon"
                     )
                 },
@@ -109,25 +113,16 @@ fun RegisterScreen(
 
             // Password Input
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Password") },
+                value = city,
+                onValueChange = { city = it },
+                label = { Text("City") },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Lock,
+                        imageVector = Icons.Default.LocationOn,
                         contentDescription = "Password Icon"
                     )
                 },
-                trailingIcon = {
-                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                        Icon(
-                            imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
-                        )
-                    }
-                },
                 singleLine = true,
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done
@@ -147,10 +142,10 @@ fun RegisterScreen(
             Button(
                 onClick = {
                     focusManager.clearFocus()
-                    viewModel.register(
-                        SignupRequest(
-                            email = email,
-                            password = password
+                    viewModel.createUserProfile(
+                        UserDetailReq(
+                            name = name,
+                            city = city
                         )
                     )
                 },
@@ -159,29 +154,28 @@ fun RegisterScreen(
                     .height(50.dp),
                 shape = MaterialTheme.shapes.medium
             ) {
-                when(registerState){
-                    is RegisterState.Idle -> {
+
+                when(createProfileState){
+                    is CreateProfileState.Idle -> {
                         Text(
-                            text = "Register",
+                            text = "Create Profile",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
-                    is RegisterState.Loading -> {
+                    is CreateProfileState.Loading -> {
                         Text(
                             text = "Loading",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
-                    is RegisterState.Error -> {
+                    is CreateProfileState.Error -> {
                         Text(
                             text = "Error",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
-                    is RegisterState.Success -> {
-
-                        mainNavController.navigate(Screens.UserDetailsScreen.route)
-
+                    is CreateProfileState.Success -> {
+                        mainNavController.navigate(Screens.UserProfileScreenLayout.route)
                         Text(
                             text = "Success",
                             style = MaterialTheme.typography.titleMedium
@@ -192,23 +186,6 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Navigation to Login
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Already have an account?",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                TextButton(onClick = onNavigateToLogin) {
-                    Text(
-                        text = "Log In",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-            }
         }
     }
 }

@@ -9,7 +9,7 @@ data class SignupRequest (
 
 data class SignupResponse(
     var message: String,
-    var token:Token,
+    var tokens:Token,
     var role:String,
 )
 
@@ -36,7 +36,7 @@ data class LoginRequest(
 
 data class LoginResponse(
     var message: String,
-    var token:Token,
+    var tokens:Token,
     var role:String
 )
 

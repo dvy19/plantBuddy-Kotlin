@@ -1,6 +1,7 @@
 package com.example.plantbuddy.auth
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -46,11 +47,20 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
            try {
                val response = repo.register(request)
 
+               Log.d("m",response.toString())
+               Log.d("m",response.body().toString())
+
+               Log.d("m",response.isSuccessful.toString())
+               Log.d("m",response.code().toString())
+
+               Log.d("m",response.errorBody().toString())
+
+
                if(response.isSuccessful && response.body()!=null){
 
                        _registerState.value = RegisterState.Success(response.body()!!)
 
-                   val tokens=response.body()!!.token
+                   val tokens=response.body()!!.tokens
 
                    sessionManager.saveTokens(
                        access = tokens.access,
@@ -88,7 +98,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
                     _loginState.value = LoginState.Success(response.body()!!)
 
-                    val tokens=response.body()!!.token
+                    val tokens=response.body()!!.tokens
 
                     sessionManager.saveTokens(
                         access = tokens.access,

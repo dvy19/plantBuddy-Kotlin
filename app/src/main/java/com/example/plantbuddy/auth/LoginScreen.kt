@@ -23,7 +23,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,16 +38,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.example.plantbuddy.Screens
 import com.example.plantbuddy.userDetails.DetailViewModel
 import com.example.plantbuddy.userDetails.UserDetailRepo
 
 
 @Composable
-fun RegisterScreen(
-    mainNavController: NavController,
-    onNavigateToLogin: () -> Unit,
+fun LoginScreen(
+    onNavigateToRegister: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var email by remember { mutableStateOf("") }
@@ -57,12 +54,6 @@ fun RegisterScreen(
     val focusManager = LocalFocusManager.current
 
     val viewModel: AuthViewModel  = viewModel()
-
-    val registerState by viewModel.registerState.collectAsState()
-
-
-
-
 
 
 
@@ -79,7 +70,7 @@ fun RegisterScreen(
         ) {
             // Header Title
             Text(
-                text = "Create Account",
+                text = "Continue with Your Account",
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -147,8 +138,8 @@ fun RegisterScreen(
             Button(
                 onClick = {
                     focusManager.clearFocus()
-                    viewModel.register(
-                        SignupRequest(
+                    viewModel.login(
+                        LoginRequest(
                             email = email,
                             password = password
                         )
@@ -159,35 +150,10 @@ fun RegisterScreen(
                     .height(50.dp),
                 shape = MaterialTheme.shapes.medium
             ) {
-                when(registerState){
-                    is RegisterState.Idle -> {
-                        Text(
-                            text = "Register",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                    is RegisterState.Loading -> {
-                        Text(
-                            text = "Loading",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                    is RegisterState.Error -> {
-                        Text(
-                            text = "Error",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                    is RegisterState.Success -> {
-
-                        mainNavController.navigate(Screens.UserDetailsScreen.route)
-
-                        Text(
-                            text = "Success",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                }
+                Text(
+                    text = "Register",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -202,9 +168,9 @@ fun RegisterScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                TextButton(onClick = onNavigateToLogin) {
+                TextButton(onClick = onNavigateToRegister) {
                     Text(
-                        text = "Log In",
+                        text = "Create Account Here",
                         style = MaterialTheme.typography.labelLarge
                     )
                 }

@@ -13,6 +13,20 @@ data class UserDetailResponse(
 )
 
 data class Userdata(
+    var id:Int,
     var name:String,
-    var city:String
+    var city:String,
+    var user:Int
 )
+
+/*
+{
+    "message": "Profile saved successfully",
+    "data": {
+        "id": 1,
+        "name": "revamp",
+        "city": "kanpur",
+        "user": 8
+    }
+}
+ */
