@@ -152,10 +152,10 @@ fun HomeScreen(mainNavController: NavController) {
 
 
                 NavigationDrawerItem(
-                    label = { Text("Water Streak") },
+                    label = { Text("Your Plants") },
                     selected = false,
                     onClick = {
-                        mainNavController.navigate(Screens.WaterStreakScreen.route)
+                        mainNavController.navigate(Screens.YourPlantsScreen.route)
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )

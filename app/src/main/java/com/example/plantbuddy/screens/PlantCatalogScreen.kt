@@ -1,6 +1,7 @@
 package com.example.plantbuddy.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -35,6 +36,11 @@ import com.example.plantbuddy.plants.PlantRepo
 import com.example.plantbuddy.plants.PlantVMFac
 import com.example.plantbuddy.plants.PlantViewModel
 import com.example.plantbuddy.room.DatabaseProvider
+import com.example.plantbuddy.room.PersonalPlant.PersonalPlantEntity
+import com.example.plantbuddy.room.PersonalPlant.PersonalPlantRepo
+import com.example.plantbuddy.room.PersonalPlant.PersonalPlantVM
+import com.example.plantbuddy.room.PersonalPlant.PersonalPlantVMFac
+import com.example.plantbuddy.room.PersonalPlant.SavePersonalPlantState
 import kotlinx.coroutines.delay
 
 // Custom Color Palette Constants
@@ -66,13 +72,26 @@ fun PlantCatalogScreen(
 
 
 // Wrap in remember so we don't recreate instances on every frame/recomposition
+    val personalViewModel: PersonalPlantVM = viewModel(
+        factory = remember(context) {
+            val database = DatabaseProvider.getDatabase(context.applicationContext)
+            val repository = PersonalPlantRepo(database.personalPlantDao())
+            PersonalPlantVMFac(repository)
+        }
+    )
+
+
+// Wrap in remember so we don't recreate instances on every frame/recomposition
     val viewModel: PlantViewModel = viewModel(
         factory = remember(context) {
             val database = DatabaseProvider.getDatabase(context.applicationContext)
             val repository = PlantRepo(database.dailyFactDao())
             PlantVMFac(repository)
         }
+
     )
+
+    val savePersonalState by personalViewModel.savePersonalPlantState.collectAsState()
 
 
     LaunchedEffect(searchQuery) {
@@ -81,6 +100,15 @@ fun PlantCatalogScreen(
         viewModel.getAllPlants(
             search = searchQuery
         )
+    }
+
+    when(savePersonalState){
+        is SavePersonalPlantState.Idle -> {}
+        is SavePersonalPlantState.Loading -> {}
+        is SavePersonalPlantState.Success -> {
+            Toast.makeText(context, "Plant Added", Toast.LENGTH_SHORT).show()
+        }
+        is SavePersonalPlantState.Error -> {}
     }
 
 
@@ -177,7 +205,22 @@ fun PlantCatalogScreen(
                                         plantType = plant.plant_type.name,
                                         imageUrl = plant.image_url,
                                         //isAdded = plant.isAdded,
-                                        onAddClick = {}
+                                        onAddClick = {
+                                            personalViewModel.insertPersonalPlant(
+
+                                                PersonalPlantEntity(
+                                                    plant_id = plant.id,
+                                                    plant_name = plant.name,
+                                                    plant_type = plant.plant_type.name,
+                                                    water_requirement = plant.water_requirement.name,
+                                                    image_url = plant.image_url
+                                                )
+
+                                            )
+                                        },
+                                        onNavigate = {
+
+                                        }
                                     )
                                 }
                             }

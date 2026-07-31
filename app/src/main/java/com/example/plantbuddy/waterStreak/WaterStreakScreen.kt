@@ -32,7 +32,7 @@ import com.example.plantbuddy.waterStreak.WaterViewModel
 @Composable
 fun WaterStreakScreen(
     mainNavController: NavHostController,
-    plantId: Int = 3,
+    plantId: Int?,
 ) {
 
     val context= LocalContext.current
@@ -48,13 +48,17 @@ fun WaterStreakScreen(
 
     // Fetch initial streak details
     LaunchedEffect(plantId) {
-        viewModel.getWaterStreak(plantId)
+        plantId?.let{
+            viewModel.getWaterStreak(it)
+        }
     }
 
     // Refresh calendar after successfully posting today's water log
     LaunchedEffect(waterState) {
         if (waterState is WaterPlantState.Success) {
-            viewModel.getWaterStreak( plantId)
+            plantId?.let{
+                viewModel.getWaterStreak(it)
+            }
         }
     }
 
@@ -121,7 +125,9 @@ fun WaterStreakScreen(
                                     checked = data.watered_today,
                                     onCheckedChange = { isChecked ->
                                         if (isChecked) {
-                                            viewModel.waterPlant( WaterLogReq(plant = plantId))
+                                            plantId?.let {
+                                                viewModel.waterPlant(WaterLogReq(plant = plantId))
+                                            }
                                         }
                                     },
                                     colors = CheckboxDefaults.colors(checkedColor = Color(0xFF4CAF50))
@@ -139,8 +145,14 @@ fun WaterStreakScreen(
                 ) {
                     Text(text = state.message, color = MaterialTheme.colorScheme.error)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { viewModel.getWaterStreak( plantId) }) {
-                        Text("Retry")
+                    Button(
+                        onClick = {
+                            plantId?.let {
+                                viewModel.getWaterStreak(it)
+                            }
+                        }
+                    ) {
+                        Text(text = "Retry")
                     }
                 }
             }

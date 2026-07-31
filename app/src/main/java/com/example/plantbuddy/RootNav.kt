@@ -21,6 +21,7 @@ import com.example.plantbuddy.camera.AddNoteScreen
 import com.example.plantbuddy.camera.CameraScreen
 import com.example.plantbuddy.component.BottomNav
 import com.example.plantbuddy.plants.Fact
+import com.example.plantbuddy.room.PersonalPlant.YourPlantsScreen
 import com.example.plantbuddy.screens.FactDetails
 import com.example.plantbuddy.screens.HomeScreen
 import com.example.plantbuddy.screens.PlantCatalogScreen
@@ -73,9 +74,7 @@ fun RootNav(innerPadding: PaddingValues) {
                 )
             }
 
-            composable(Screens.WaterStreakScreen.route){
-                WaterStreakScreen(mainNavController , plantId = 3  )
-            }
+
 
         composable("splash") {
             SplashScreen(mainNavController)
@@ -143,6 +142,28 @@ fun RootNav(innerPadding: PaddingValues) {
                 plant_id= id
             )
         }
+
+
+            composable(
+                route = Screens.WaterStreakScreen.route,
+                arguments = listOf(
+                    navArgument("id") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+
+                val id = backStackEntry.arguments?.getInt("id")
+
+                WaterStreakScreen(
+                    mainNavController = mainNavController,
+                    plantId= id,
+                )
+            }
+
+            composable(Screens.YourPlantsScreen.route){
+                YourPlantsScreen(mainNavController = mainNavController)
+            }
 
         composable(Screens.SavedPhotosScreen.route){
             SavedPhotosScreen(mainNavController = mainNavController)

@@ -1,7 +1,7 @@
 package com.example.plantbuddy.waterStreak
 
 data class WaterLogReq (
-    var plant:Int = 3
+    var plant:Int,
 
 )
 data class WaterLogResponse(

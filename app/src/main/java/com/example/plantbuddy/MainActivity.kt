@@ -57,7 +57,9 @@ sealed class Screens( var route:String){
 
     data object UserDetailsScreen:Screens("profile")
 
-    data object WaterStreakScreen:Screens("water_streak")
+    data object WaterStreakScreen:Screens("water_streak/{id}")
 
     data object PlantCatalogScreen:Screens("plant_catalog")
+
+    data object YourPlantsScreen:Screens("your_plant")
 }
