@@ -13,9 +13,9 @@ class PlantRepo(
     private val plantInterface = ApiClient.getAllPlantsApi
 
 
-    suspend fun get_all_plants(page:Int) : Response<PlantPageResponse> {
+    suspend fun get_all_plants(page:Int , search:String?) : Response<PlantPageResponse> {
 
-        return plantInterface.getAllPlants(page)
+        return plantInterface.getAllPlants(page , search)
     }
 
     suspend fun getPlantFact(): Fact {

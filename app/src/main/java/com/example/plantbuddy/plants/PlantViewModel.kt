@@ -20,6 +20,7 @@ sealed class GetAllPlantsState {
         val previous: String?
 
     ): GetAllPlantsState()
+
     data class Error(val message:String): GetAllPlantsState()
 }
 
@@ -67,8 +68,8 @@ class PlantViewModel(
 
     private val allPlants = mutableListOf<Plant>()
 
-
-    fun getAllPlants(page: Int = 1) {
+    var currentSearch = ""
+    fun getAllPlants(page: Int = 1, search:String = currentSearch) {
 
         viewModelScope.launch {
 
@@ -80,7 +81,7 @@ class PlantViewModel(
 
             try {
 
-                val response = repo.get_all_plants(page)
+                val response = repo.get_all_plants(page  , search)
 
                 /*
                 Log.d("m", response.body().toString())

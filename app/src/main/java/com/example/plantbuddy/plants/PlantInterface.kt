@@ -10,7 +10,8 @@ interface PlantInterface{
 
     @GET("api/plants/allPlants/")
     suspend fun getAllPlants(
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("search") search: String? = null
     ) : Response<PlantPageResponse>
 
     @GET("api/plants/getFactOfDay/")

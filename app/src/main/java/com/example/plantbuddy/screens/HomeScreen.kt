@@ -161,9 +161,11 @@ fun HomeScreen(mainNavController: NavController) {
                 )
 
                 NavigationDrawerItem(
-                    label = { Text("Saved Places") },
+                    label = { Text("Plant Catalog") },
                     selected = false,
-                    onClick = {},
+                    onClick = {
+                        mainNavController.navigate(Screens.PlantCatalogScreen.route)
+                    },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
 

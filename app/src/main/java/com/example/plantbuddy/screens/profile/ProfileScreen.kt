@@ -121,6 +121,9 @@ fun UserProfileScreenLayout(
 
                     onLogoutClick = {
                         sessionManager.logout()
+                    },
+                    onYourPlantsClick = {
+                        mainNavController.navigate(Screens.PlantCatalogScreen.route)
                     }
                 )
 

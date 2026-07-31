@@ -23,6 +23,7 @@ import com.example.plantbuddy.component.BottomNav
 import com.example.plantbuddy.plants.Fact
 import com.example.plantbuddy.screens.FactDetails
 import com.example.plantbuddy.screens.HomeScreen
+import com.example.plantbuddy.screens.PlantCatalogScreen
 import com.example.plantbuddy.screens.PlantDetailScreen
 import com.example.plantbuddy.screens.SavedFactsScreen
 import com.example.plantbuddy.screens.SavedPhotosScreen
@@ -50,6 +51,9 @@ fun RootNav(innerPadding: PaddingValues) {
                 UserProfileScreenLayout(mainNavController)
             }
 
+            composable(Screens.PlantCatalogScreen.route){
+                PlantCatalogScreen(mainNavController)
+            }
             composable(Screens.RegisterScreen.route) {
                 RegisterScreen(
                     mainNavController,
