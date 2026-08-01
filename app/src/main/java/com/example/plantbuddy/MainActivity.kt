@@ -52,6 +52,8 @@ sealed class Screens( var route:String){
 
     data object LoginScreen:Screens("login")
 
+    data object GetStartScreen:Screens("get_start")
+
 
     data object UserProfileScreenLayout:Screens("profile-layout")
 

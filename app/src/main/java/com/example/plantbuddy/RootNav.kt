@@ -44,7 +44,7 @@ fun RootNav(innerPadding: PaddingValues) {
         NavHost(
             modifier = Modifier.padding(paddingValues),
         navController = mainNavController,
-        startDestination = Screens.HomeScreen.route
+        startDestination = Screens.GetStartScreen.route
     ) {
 
 
@@ -54,6 +54,16 @@ fun RootNav(innerPadding: PaddingValues) {
 
             composable(Screens.PlantCatalogScreen.route){
                 PlantCatalogScreen(mainNavController)
+            }
+            composable(Screens.GetStartScreen.route) {
+                GetStartScreen(
+                    onUserSelected = {
+                        mainNavController.navigate(Screens.HomeScreen.route)
+                    },
+                    onNgoSelected = {
+                        mainNavController.navigate(Screens.RegisterScreen.route)
+                    }
+                )
             }
             composable(Screens.RegisterScreen.route) {
                 RegisterScreen(
