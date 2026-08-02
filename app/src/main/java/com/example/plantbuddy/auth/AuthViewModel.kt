@@ -66,6 +66,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                        access = tokens.access,
                        refresh = tokens.refresh
                    )
+                   sessionManager.saveRole(
+                       role=response.body()!!.role
+                   )
 
                    }
 
@@ -105,6 +108,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         refresh = tokens.refresh
                     )
 
+                    sessionManager.saveRole(
+                        role=response.body()!!.role
+                    )
                 }
 
                 else {

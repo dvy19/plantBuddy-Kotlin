@@ -27,18 +27,45 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.plantbuddy.auth.SessionManager
 import kotlinx.coroutines.delay
 // Assuming CreamBackground is defined in your theme, or use Color(0xFFFDFBF7)
 val CreamBackground = Color(0xFFFDFBF7)
 val TravelTeal = Color(0xFF1A5F7A) // A premium accent color for travel
 @Composable
-fun SplashScreen(rootNavController: NavController) {
+fun SplashScreen(
+    mainNavController: NavController
+) {
 
 
 
 
 
     val CreamBackground = Color(0xFFFAF8F5) // Clean off-white surface color
+
+    val context=LocalContext.current
+
+    val sessionManager= SessionManager(context)
+
+    val accessToken=sessionManager.getAccessToken()
+
+    val role= sessionManager.getRole()
+
+    Log.d("m", accessToken.toString())
+    Log.d("role",role.toString())
+
+    if(accessToken !=null && role=="ngo"){
+        mainNavController.navigate("ngo_home")
+    }
+    else if(accessToken !=null && role=="user"){
+        mainNavController.navigate("user_home")
+    }
+    else{
+        mainNavController.navigate("get_start")
+    }
+
+
+
 
 
     // 2. Premium Minimalist Branding Layout
@@ -96,8 +123,3 @@ fun SplashScreen(rootNavController: NavController) {
     }
 }
 
-@Preview
-@Composable
-fun PreviewSplash(){
-    SplashScreen(rootNavController = NavController(LocalContext.current))
-}

@@ -32,7 +32,7 @@ class CampaignRepo (
         required_volunteers: Int,
         is_active: Boolean,
         logo: MultipartBody.Part?
-    ) : Response<CampaignResponse>{
+    ) : Response<SingleCampaignResponse>{
 
         return api.createCampaign(
 
@@ -51,4 +51,11 @@ class CampaignRepo (
 
         }
 
+    suspend fun get_active_campaigns(is_active: Boolean) : Response<AllCampaignResponse>{
+        return api.getCampaigns(
+            "Bearer $token",
+            is_active
+        )
     }
+
+}

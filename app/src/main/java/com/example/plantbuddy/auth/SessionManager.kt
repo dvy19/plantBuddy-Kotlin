@@ -28,6 +28,16 @@ class SessionManager(context: Context) {
             .apply()
     }
 
+    fun saveRole(role: String) {
+        prefs.edit()
+            .putString("role", role)
+            .apply()
+    }
+
+    fun getRole(): String? {
+        return prefs.getString("role", null)
+    }
+
     fun getAccessToken(): String? {
         return prefs.getString(KEY_ACCESS, null)
     }

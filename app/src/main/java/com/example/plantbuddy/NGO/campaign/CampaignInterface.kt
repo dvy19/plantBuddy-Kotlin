@@ -1,8 +1,10 @@
 package com.example.plantbuddy.NGO.campaign
 
+import retrofit2.http.Query
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -33,5 +35,13 @@ interface CampaignInterface {
         @Part logo: MultipartBody.Part?
 
 
-    ) : Response<CampaignResponse>
+    ) : Response<SingleCampaignResponse>
+
+
+    @GET("api/ngo/campaigns/")
+    suspend fun getCampaigns(
+        @Header("Authorization") token: String,
+        @Query("is_active") is_active: Boolean,
+    ) : Response<AllCampaignResponse>
+
 }

@@ -74,7 +74,7 @@ fun RootNav(innerPadding: PaddingValues) {
         NavHost(
             modifier = Modifier.padding(paddingValues),
         navController = mainNavController,
-        startDestination = Screens.GetStartScreen.route
+        startDestination = Screens.SplashScreen.route
     ) {
 
 

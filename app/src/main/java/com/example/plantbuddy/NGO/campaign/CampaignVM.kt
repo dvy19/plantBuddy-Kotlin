@@ -7,20 +7,29 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import retrofit2.Response
 
 
 sealed class CreateCampaignState{
     object Idle : CreateCampaignState()
     object Loading : CreateCampaignState()
-    data class Success(val data: CampaignResponse) : CreateCampaignState()
+    data class Success(val data: SingleCampaignResponse) : CreateCampaignState()
     data class Error(val message: String) : CreateCampaignState()
 }
 
 sealed class GetCampaignState{
     object Idle : GetCampaignState()
     object Loading : GetCampaignState()
-    data class Success(val data: CampaignResponse) : GetCampaignState()
+    data class Success(val data: SingleCampaignResponse) : GetCampaignState()
     data class Error(val message: String) : GetCampaignState()
+}
+
+
+sealed class GetActiveCampaignState{
+    object Idle : GetActiveCampaignState()
+    object Loading : GetActiveCampaignState()
+    data class Success(val data: List<Campaign>) : GetActiveCampaignState()
+    data class Error(val message: String) : GetActiveCampaignState()
 }
 
 class CampaignVM(
@@ -29,6 +38,9 @@ class CampaignVM(
 
     private val _state = MutableStateFlow<CreateCampaignState>(CreateCampaignState.Idle)
     val state: StateFlow<CreateCampaignState> = _state.asStateFlow()
+
+    private val _getActiveCampaignState = MutableStateFlow<GetActiveCampaignState>(GetActiveCampaignState.Idle)
+    val getActiveCampaignState: StateFlow<GetActiveCampaignState> = _getActiveCampaignState.asStateFlow()
 
     fun createNgoCampaign(
 
@@ -96,5 +108,31 @@ class CampaignVM(
 
      */
 
+    fun getActiveCampaign(is_active: Boolean) {
+
+        viewModelScope.launch {
+            _getActiveCampaignState.value = GetActiveCampaignState.Loading
+
+            try{
+                val response = repo.get_active_campaigns(is_active)
+
+                if(response.isSuccessful){
+                    _getActiveCampaignState.value = GetActiveCampaignState.Success(response.body()!!.data)
+                }else{
+                    _getActiveCampaignState.value = GetActiveCampaignState.Error(response.message())
+                }
+                }catch (e: Exception){
+                _getActiveCampaignState.value = GetActiveCampaignState.Error(e.message ?: "An error occurred")
+            }
+
+
         }
+
+    }
+
+
+
+}
+
+
 
