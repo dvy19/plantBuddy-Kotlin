@@ -1,5 +1,8 @@
 package com.example.plantbuddy.NGO.campaign
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,15 +19,21 @@ import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.MonetizationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.plantbuddy.NGO.createImagePart
+import com.example.plantbuddy.auth.SessionManager
 
 // --- Plant App Color Palette ---
 private val ForestGreen = Color(0xFF1E3A27)
@@ -35,6 +44,7 @@ private val SageOutline = Color(0xFFA8C3AD)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NgoCreateCampaign(
+    mainNavController: NavController,
     onBackClick: () -> Unit = {},
 ) {
     // Form States
@@ -46,6 +56,30 @@ fun NgoCreateCampaign(
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
     var isActive by remember { mutableStateOf(true) }
+
+    val context=LocalContext.current
+
+    val repo=CampaignRepo(SessionManager(context))
+
+    val viewModel: CampaignVM=viewModel(
+        factory = CampaignVMFac(repo)
+    )
+
+    val createCampaignState by viewModel.state.collectAsState()
+
+
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickVisualMedia()
+        ) { uri ->
+
+            selectedImageUri = uri
+
+        }
 
     val scrollState = rememberScrollState()
 
@@ -241,18 +275,29 @@ fun NgoCreateCampaign(
             // Submit Button
             Button(
                 onClick = {
-                    onSubmitCampaign(
-                        CampaignData(
-                            title = title,
-                            description = description,
-                            location = location,
-                            goalAmount = goalAmount.toDoubleOrNull() ?: 0.0,
-                            requiredVolunteers = requiredVolunteers.toIntOrNull() ?: 0,
-                            startDate = startDate,
-                            endDate = endDate,
-                            isActive = isActive
-                        )
-                    )
+
+                    val imagePart =
+                        selectedImageUri?.let {
+
+                            createImagePart(
+                                context,
+                                it
+                            )
+
+                        }
+
+                   viewModel.createNgoCampaign(
+                       title = title,
+                       description = description,
+                       location = location,
+                       start_date = startDate,
+                       end_date = endDate,
+                       goal_amount = goalAmount.toDouble(),
+                       required_volunteers = requiredVolunteers.toInt(),
+                       is_active = isActive,
+                       logo = imagePart
+
+                   )
                 },
                 enabled = isFormValid,
                 modifier = Modifier
@@ -265,12 +310,42 @@ fun NgoCreateCampaign(
                     disabledContainerColor = SageOutline.copy(alpha = 0.5f)
                 )
             ) {
-                Text(
-                    text = "Launch Campaign",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
+                when(createCampaignState){
+                    is CreateCampaignState.Idle -> {
+                        Text(
+                            text = "Create Campaign",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ))
+                    }
+                    is CreateCampaignState.Success -> {
+
+                        Text(
+                            text = "Campaign Created",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+
+                        )}
+
+                    is CreateCampaignState.Loading -> {
+                        Text(
+                            text = "Loading",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+
+                            ))}
+
+                    is CreateCampaignState.Error -> {
+                        Text(
+                            text = "Error",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ))}
+
+
+
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))

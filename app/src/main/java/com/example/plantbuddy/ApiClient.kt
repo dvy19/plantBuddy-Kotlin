@@ -1,6 +1,7 @@
 package com.example.plantbuddy
 
 import com.example.plantbuddy.FAQRetrofit.FaqApiInterface
+import com.example.plantbuddy.NGO.campaign.CampaignInterface
 import com.example.plantbuddy.NGO.details.NgoApiInterface
 import com.example.plantbuddy.auth.AuthInterface
 import com.example.plantbuddy.plants.PlantInterface
@@ -73,6 +74,10 @@ object ApiClient {
 
     val ngoDetailsApi: NgoApiInterface by lazy{
         retrofit.create(NgoApiInterface::class.java)
+    }
+
+    val campaignApi:CampaignInterface by lazy{
+        retrofit.create(CampaignInterface::class.java)
     }
 
     }

@@ -56,6 +56,13 @@ class NgoDetailsRepo(
             )
 
         }
+
+    suspend fun get_ngo_profile() : Response<NgoDetailsResponse> {
+
+        return api.getNgoProfile("Bearer $token")
     }
+
+
+}
 
 

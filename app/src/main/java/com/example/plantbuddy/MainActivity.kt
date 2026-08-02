@@ -69,4 +69,7 @@ sealed class Screens( var route:String){
     data object NgoRegistrationForm:Screens("ngo_registration")
     data object NgoHomeScreen:Screens("ngo_home")
     data object NgoCreateCampaignScreen:Screens("ngo_create_campaign")
+    data object NgoLoginScreen:Screens("ngo_login")
+    data object NgoProfileScreen:Screens("ngo_profile")
+
 }

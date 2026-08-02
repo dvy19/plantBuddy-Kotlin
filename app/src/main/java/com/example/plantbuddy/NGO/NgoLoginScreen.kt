@@ -1,5 +1,6 @@
 package com.example.plantbuddy.NGO
 
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.AuthViewModel
+import com.example.plantbuddy.auth.LoginRequest
+import com.example.plantbuddy.auth.LoginState
 import com.example.plantbuddy.auth.RegisterState
 import com.example.plantbuddy.auth.SignupRequest
 
@@ -37,7 +40,7 @@ private val SageOutline = Color(0xFFA8C3AD)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NgoRegistrationScreen(
+fun NgoLoginScreen(
     mainNavController: NavController,
 ) {
     var email by remember { mutableStateOf("") }
@@ -49,7 +52,7 @@ fun NgoRegistrationScreen(
 
     val viewModel: AuthViewModel  = viewModel()
 
-    val registerState by viewModel.registerState.collectAsState()
+    val loginState by viewModel.loginState.collectAsState()
 
     val scrollState = rememberScrollState()
 
@@ -250,11 +253,10 @@ fun NgoRegistrationScreen(
             // Submit Button
             Button(
                 onClick = {
-                    viewModel.register(
-                        SignupRequest(
+                    viewModel.login(
+                        LoginRequest(
                             email = email,
-                            password = password,
-                            role = "ngo"
+                            password = password
                         )
                     )
                 },
@@ -270,8 +272,8 @@ fun NgoRegistrationScreen(
                 )
             ) {
 
-                when(registerState){
-                    is RegisterState.Idle -> {
+                when(loginState){
+                    is LoginState.Idle -> {
                         Text(
                             text = "Register",
                             style = MaterialTheme.typography.titleMedium.copy(
@@ -280,15 +282,15 @@ fun NgoRegistrationScreen(
                         )
 
                     }
-                    is RegisterState.Success -> {
+                    is LoginState.Success -> {
                         Text(
                             text = "Success",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ))
-                         mainNavController.navigate(Screens.NgoDetailsScreen.route)
+                        mainNavController.navigate(Screens.NgoHomeScreen.route)
                     }
-                    is RegisterState.Loading -> {
+                    is LoginState.Loading -> {
                         Text(
                             text = "Loading",
                             style = MaterialTheme.typography.titleMedium.copy(
@@ -296,7 +298,7 @@ fun NgoRegistrationScreen(
                             ))
 
                     }
-                    is RegisterState.Error -> {
+                    is LoginState.Error -> {
                         Text(
                             text = "Error",
                             style = MaterialTheme.typography.titleMedium.copy(
@@ -307,29 +309,6 @@ fun NgoRegistrationScreen(
 
                 }
 
-
-
-            }
-
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Navigation to Login
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Already have an account?",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                TextButton(onClick = { mainNavController.navigate(Screens.NgoLoginScreen.route) }) {
-                    Text(
-                        text = "Log In",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
             }
         }
     }

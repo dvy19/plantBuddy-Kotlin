@@ -37,6 +37,8 @@ import com.example.plantbuddy.userDetails.UserDetailsScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.example.plantbuddy.NGO.NgoBottomNavBar
+import com.example.plantbuddy.NGO.NgoLoginScreen
+import com.example.plantbuddy.NGO.NgoProfileScreen
 
 @Composable
 fun RootNav(innerPadding: PaddingValues) {
@@ -110,6 +112,14 @@ fun RootNav(innerPadding: PaddingValues) {
 
             composable(Screens.NgoCreateCampaignScreen.route){
                 NgoCreateCampaign(mainNavController)
+            }
+
+            composable(Screens.NgoLoginScreen.route){
+                NgoLoginScreen(mainNavController)
+            }
+
+            composable(Screens.NgoProfileScreen.route){
+                NgoProfileScreen(mainNavController)
             }
 
             composable(Screens.RegisterScreen.route) {

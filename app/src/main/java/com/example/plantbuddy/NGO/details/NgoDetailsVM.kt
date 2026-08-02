@@ -14,12 +14,23 @@ sealed class NgoCreateState{
     data class Success(val data: NgoDetailsResponse): NgoCreateState()
     data class Error(val message: String): NgoCreateState()
 }
+
+sealed class GetNgoProfileState{
+    object Idle: GetNgoProfileState()
+    object Loading: GetNgoProfileState()
+    data class Success(val data: NgoDetailsResponse): GetNgoProfileState()
+    data class Error(val message: String): GetNgoProfileState()
+}
 class NgoDetailsVM(
     private val repo: NgoDetailsRepo
-) : ViewModel(){
+) : ViewModel() {
 
-    val _ngoCreateState= MutableStateFlow<NgoCreateState>(NgoCreateState.Idle)
-    val ngoCreateState=_ngoCreateState.asStateFlow()
+    val _ngoCreateState = MutableStateFlow<NgoCreateState>(NgoCreateState.Idle)
+    val ngoCreateState = _ngoCreateState.asStateFlow()
+
+    val _getProfileState = MutableStateFlow<GetNgoProfileState>(GetNgoProfileState.Idle)
+    val getProfileState = _getProfileState.asStateFlow()
+
 
     fun createNgoProfile(
         name: String,
@@ -29,13 +40,13 @@ class NgoDetailsVM(
         address: String,
         website: String,
         logo: MultipartBody.Part?
-    ){
+    ) {
 
-        _ngoCreateState.value=NgoCreateState.Loading
+        _ngoCreateState.value = NgoCreateState.Loading
 
         viewModelScope.launch {
             try {
-                val response=repo.createNgo(
+                val response = repo.createNgo(
                     name,
                     description,
                     phone,
@@ -45,18 +56,37 @@ class NgoDetailsVM(
                     logo
                 )
 
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     response.body()?.let {
-                        _ngoCreateState.value=NgoCreateState.Success(it)
+                        _ngoCreateState.value = NgoCreateState.Success(it)
                     }
 
-                }else{
-                    _ngoCreateState.value=NgoCreateState.Error(response.message())
+                } else {
+                    _ngoCreateState.value = NgoCreateState.Error(response.message())
                 }
 
-            }catch (e: Exception){
-                _ngoCreateState.value=NgoCreateState.Error(e.message ?: "Unknown Error")
+            } catch (e: Exception) {
+                _ngoCreateState.value = NgoCreateState.Error(e.message ?: "Unknown Error")
             }
+        }
+    }
+
+    fun getProfile() {
+        _getProfileState.value = GetNgoProfileState.Loading
+        viewModelScope.launch {
+            try {
+                val response = repo.get_ngo_profile()
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _getProfileState.value = GetNgoProfileState.Success(it)
+                    }
+                } else {
+                    _getProfileState.value = GetNgoProfileState.Error(response.message())
+                }
+            } catch (e: Exception) {
+                _getProfileState.value = GetNgoProfileState.Error(e.message ?: "Unknown Error")
+            }
+
         }
     }
 
