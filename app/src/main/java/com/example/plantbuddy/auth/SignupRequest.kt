@@ -4,7 +4,7 @@ data class SignupRequest (
 
     var email:String,
     var password: String,
-    var role:String="user"
+    var role:String
 )
 
 data class SignupResponse(

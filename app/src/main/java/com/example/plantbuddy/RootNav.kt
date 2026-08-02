@@ -6,15 +6,17 @@ import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.plantbuddy.NGO.campaign.NgoCreateCampaign
+import com.example.plantbuddy.NGO.NgoHome
+import com.example.plantbuddy.NGO.NgoRegistrationScreen
+import com.example.plantbuddy.NGO.details.NgoDetailsForm
 import com.example.plantbuddy.auth.LoginScreen
 import com.example.plantbuddy.auth.RegisterScreen
 import com.example.plantbuddy.camera.AddNoteScreen
@@ -32,13 +34,39 @@ import com.example.plantbuddy.screens.SplashScreen
 import com.example.plantbuddy.screens.profile.UserProfileScreenLayout
 import com.example.plantbuddy.userDetails.UserDetailsScreen
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import com.example.plantbuddy.NGO.NgoBottomNavBar
 
 @Composable
 fun RootNav(innerPadding: PaddingValues) {
     val mainNavController = rememberNavController()
+
+    val navBackStackEntry by mainNavController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val bottomBarRoutes = listOf(
+
+        Screens.HomeScreen.route,
+    )
+
+    val ngoRoutes=listOf(
+        Screens.NgoHomeScreen.route,
+        Screens.NgoCreateCampaignScreen.route,
+
+    )
+
     Scaffold(
         bottomBar = {
-            BottomNav(mainNavController)
+
+            if (currentRoute in bottomBarRoutes) {
+                BottomNav(mainNavController)
+            }
+            else{
+                if(currentRoute in ngoRoutes){
+                    NgoBottomNavBar(mainNavController)
+                }
+            }
         }
     ) { paddingValues ->
         NavHost(
@@ -48,6 +76,7 @@ fun RootNav(innerPadding: PaddingValues) {
     ) {
 
 
+
             composable(Screens.UserProfileScreenLayout.route){
                 UserProfileScreenLayout(mainNavController)
             }
@@ -55,16 +84,34 @@ fun RootNav(innerPadding: PaddingValues) {
             composable(Screens.PlantCatalogScreen.route){
                 PlantCatalogScreen(mainNavController)
             }
+
             composable(Screens.GetStartScreen.route) {
                 GetStartScreen(
                     onUserSelected = {
                         mainNavController.navigate(Screens.HomeScreen.route)
                     },
                     onNgoSelected = {
-                        mainNavController.navigate(Screens.RegisterScreen.route)
+                        mainNavController.navigate(Screens.NgoRegistrationForm.route)
                     }
                 )
             }
+
+            composable(Screens.NgoDetailsScreen.route){
+                NgoDetailsForm(mainNavController)
+            }
+
+            composable(Screens.NgoRegistrationForm.route){
+                NgoRegistrationScreen(mainNavController)
+            }
+
+            composable(Screens.NgoHomeScreen.route){
+                NgoHome(mainNavController)
+            }
+
+            composable(Screens.NgoCreateCampaignScreen.route){
+                NgoCreateCampaign(mainNavController)
+            }
+
             composable(Screens.RegisterScreen.route) {
                 RegisterScreen(
                     mainNavController,

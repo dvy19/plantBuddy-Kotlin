@@ -77,25 +77,7 @@ fun NgoDetailsForm(
 
     val ngoCreateState by viewModel.ngoCreateState.collectAsState()
 
-    when(ngoCreateState){
-        is NgoCreateState.Idle->{
 
-        }
-
-        is NgoCreateState.Loading->{
-
-        }
-
-        is NgoCreateState.Success->{
-            Toast.makeText(context,"NGO Registered Successfully",Toast.LENGTH_SHORT).show()
-        }
-
-        is NgoCreateState.Error->{
-            Toast.makeText(context,"Error ",Toast.LENGTH_SHORT).show()
-        }
-        else -> {}
-
-    }
 
     var selectedImageUri by remember {
         mutableStateOf<Uri?>(null)
@@ -290,12 +272,31 @@ fun NgoDetailsForm(
                     disabledContainerColor = SageOutline.copy(alpha = 0.5f)
                 )
             ) {
-                Text(
-                    text = "Complete Registration",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
+                when(ngoCreateState){
+                    is NgoCreateState.Idle->{
+                        Text(text = "Submit")
+
+                    }
+
+                    is NgoCreateState.Loading->{
+                        Text(text = "Loading")
+
+                    }
+
+                    is NgoCreateState.Success->{
+                        mainNavController.navigate("ngo_home")
+
+                        Toast.makeText(context,"NGO Registered Successfully",Toast.LENGTH_SHORT).show()
+                    }
+
+                    is NgoCreateState.Error->{
+
+                        Toast.makeText(context,"Error ",Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {}
+
+                }
+
             }
 
             Spacer(modifier = Modifier.height(24.dp))

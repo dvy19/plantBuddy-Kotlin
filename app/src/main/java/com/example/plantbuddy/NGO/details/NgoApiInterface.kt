@@ -11,7 +11,7 @@ import retrofit2.http.Part
 interface NgoApiInterface {
 
     @Multipart
-    @POST("ngo/create/")
+    @POST("api/ngo/create/")
     suspend fun createNGO(
 
         @Header("Authorization") token: String,
@@ -20,7 +20,7 @@ interface NgoApiInterface {
 
         @Part("description") description: RequestBody,
 
-        @Part("phone") phone: RequestBody,
+        @Part("phone_number") phone: RequestBody,
 
         @Part("city") city: RequestBody,
 

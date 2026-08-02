@@ -150,7 +150,8 @@ fun RegisterScreen(
                     viewModel.register(
                         SignupRequest(
                             email = email,
-                            password = password
+                            password = password,
+                            role="user"
                         )
                     )
                 },
