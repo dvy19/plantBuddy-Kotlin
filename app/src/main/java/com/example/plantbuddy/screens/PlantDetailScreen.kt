@@ -58,13 +58,12 @@ import com.example.plantbuddy.room.wishlist.SavedPlantState
 
 
 // --- Custom Theme Colors ---
-private val ForestGreen = Color(0xFF1B4332)
-private val LightSage = Color(0xFFE8F5E9)
-private val MutedSage = Color(0xFFD8F3DC)
-private val SurfaceWhite = Color(0xFFFFFFFF)
-private val SoftBackground = Color(0xFFF8F9FA)
-private val TextDark = Color(0xFF1D2A24)
-private val TextMuted = Color(0xFF6C757D)
+val ForestGreen = Color(0xFF1B4332)
+val LightSage = Color(0xFFE8F5E9)
+val MutedSage = Color(0xFFD8F3DC)
+val SurfaceWhite = Color(0xFFFFFFFF)
+val SoftBackground = Color(0xFFF8F9FA)
+val TextMuted = Color(0xFF6C757D)
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable

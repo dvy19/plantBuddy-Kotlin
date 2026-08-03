@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
@@ -22,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.plantbuddy.plants.Fact
 import com.example.plantbuddy.room.DatabaseProvider
 import com.example.plantbuddy.room.SavedFactRepository
@@ -30,16 +32,17 @@ import com.example.plantbuddy.room.SavedFactViewModel
 import com.example.plantbuddy.room.SavedViewModelFac
 
 // --- Greenery Color Palette Setup ---
-private val EmeraldPrimary = Color(0xFF2E6F40)      // Primary Green
-private val ForestDarkContainer = Color(0xFF1B4D2E) // Dark Green Container
-private val MintContainer = Color(0xFFE2F3E5)       // Soft Green Light Accent
-private val SageOnContainer = Color(0xFF0F381D)     // Dark Text on Light Green
-private val SoftWhiteBackground = Color(0xFFFBFDFC) // Very Soft Off-White Background
-private val TextDark = Color(0xFF191C19)            // Primary Body Dark
+ val EmeraldPrimary = Color(0xFF2E6F40)      // Primary Green
+ val ForestDarkContainer = Color(0xFF1B4D2E) // Dark Green Container
+ val MintContainer = Color(0xFFE2F3E5)       // Soft Green Light Accent
+ val SageOnContainer = Color(0xFF0F381D)     // Dark Text on Light Green
+ val SoftWhiteBackground = Color(0xFFFBFDFC) // Very Soft Off-White Background
+val TextDark = Color(0xFF191C19)            // Primary Body Dark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FactDetails(
+    mainNavController: NavController,
     fact: Fact,
     onBackClick: () -> Unit = {},
     onShareClick: () -> Unit = {},
@@ -66,9 +69,17 @@ fun FactDetails(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { },
+                title = {
+                    Text(
+                        text = "Today's Fact",
+                        color = TextDark
+                    )
+                },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
+                    IconButton(onClick = {
+                        mainNavController.popBackStack()
+                    }) {
+
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Navigate back",
@@ -145,16 +156,28 @@ fun FactDetails(
                             contentColor = Color.White
                         )
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.BookmarkBorder,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
 
-                        )
                         Spacer(modifier = Modifier.width(8.dp))
                         when (saveState) {
+                            is SavedFactState.Idle -> {
+                                Icon(
+                                    imageVector = Icons.Default.BookmarkBorder,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+
+                                )
+                                Text("Save Offline")
+                            }
                             is SavedFactState.Loading -> CircularProgressIndicator(color = Color.White)
-                            is SavedFactState.Success -> Text("Saved Offline ✓")
+                            is SavedFactState.Success -> {
+                                Icon(
+                                    imageVector = Icons.Default.Bookmark,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+
+                                )
+                                Text("Saved Offline")
+                            }
                             is SavedFactState.Error -> Text("Retry Save")
                             else -> Text("Save Offline")
                         }

@@ -10,10 +10,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -44,19 +46,13 @@ import com.example.plantbuddy.room.PersonalPlant.SavePersonalPlantState
 import kotlinx.coroutines.delay
 
 // Custom Color Palette Constants
-private val ForestGreen = Color(0xFF2E7D32)
-private val DarkGreenText = Color(0xFF1B5E20)
-private val LightGreenBg = Color(0xFFF1F8E9)
-private val MintChip = Color(0xFFE8F5E9)
 
-// Data class representing a Plant
-data class PlantItem(
-    val id: Int,
-    val name: String,
-    val type: String,
-    val imageUrl: String,
-    val isAdded: Boolean = false
-)
+val DarkGreenText = Color(0xFF1B5E20)
+val LightGreenBg = Color(0xFFF1F8E9)
+val MintChip = Color(0xFFE8F5E9)
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -115,6 +111,31 @@ fun PlantCatalogScreen(
     val state by viewModel.getPlantsState.collectAsState()
     // Keep Scaffold and Search Bar OUTSIDE the state block so UI structure stays fixed
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Find All Plants ",
+                        color = TextDark
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        mainNavController.popBackStack()
+                    }) {
+
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Navigate back",
+                            tint = EmeraldPrimary
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = SoftWhiteBackground
+                )
+            )
+        },
         containerColor = Color(0xFFF8FAF7)
     ) { paddingValues ->
         Column(
@@ -153,8 +174,17 @@ fun PlantCatalogScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
+
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+
+                    cursorColor = ForestGreen,
+
                     focusedBorderColor = ForestGreen,
-                    unfocusedBorderColor = MintChip
+                    unfocusedBorderColor = Color.Gray,
+
+                    focusedPlaceholderColor = Color.Gray,
+                    unfocusedPlaceholderColor = Color.Gray
                 )
             )
 

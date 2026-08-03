@@ -1,7 +1,9 @@
 package com.example.plantbuddy.screens
 
+import HomeRowCard
 import android.R.attr.onClick
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,7 +49,9 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.remember
@@ -68,6 +72,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.plantbuddy.NGO.Screens.SoftLeafGreen
 import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.SessionManager
 import com.example.plantbuddy.component.HomeCategoryCard
@@ -84,13 +89,6 @@ import com.example.plantbuddy.room.SavedFactViewModel
 import com.example.plantbuddy.room.SavedViewModelFac
 import com.example.plantbuddy.weather.WeatherViewModel
 import kotlinx.coroutines.launch
-
-// Model for grid items
-data class HomeCategory(
-    val id: String,
-    val title: String,
-    val icon: ImageVector
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -136,14 +134,29 @@ fun HomeScreen(mainNavController: NavController) {
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(
-                modifier = Modifier.width(240.dp)
+                modifier = Modifier.width(240.dp),
+                drawerContainerColor = Color.White
             ) {
                 // Header spacing (or add a DrawerHeader here)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 NavigationDrawerItem(
-                    label = { Text("Saved Facts") },
+                    label = {
+                        Text(
+                            "Saved Facts",
+                            color = Color.Black
+                        )
+                            },
                     selected = false,
+
+                    colors = NavigationDrawerItemDefaults.colors(
+                        unselectedContainerColor = Color.White,
+                        selectedContainerColor = Color(0xFFE0E0E0), // Light gray when selected
+                        unselectedTextColor = Color.Black,
+                        selectedTextColor = Color.Black,
+                        unselectedIconColor = Color.Black,
+                        selectedIconColor = Color.Black
+                    ),
                     onClick = {
                         mainNavController.navigate(Screens.SavedFactsScreen.route)
                     },
@@ -152,8 +165,20 @@ fun HomeScreen(mainNavController: NavController) {
 
 
                 NavigationDrawerItem(
-                    label = { Text("Your Plants") },
+                    label = { Text(
+                        "Your Plants",
+                        color = Color.Black
+                    ) },
                     selected = false,
+
+                    colors = NavigationDrawerItemDefaults.colors(
+                        unselectedContainerColor = Color.White,
+                        selectedContainerColor = Color(0xFFE0E0E0), // Light gray when selected
+                        unselectedTextColor = Color.Black,
+                        selectedTextColor = Color.Black,
+                        unselectedIconColor = Color.Black,
+                        selectedIconColor = Color.Black
+                    ),
                     onClick = {
                         mainNavController.navigate(Screens.YourPlantsScreen.route)
                     },
@@ -161,8 +186,20 @@ fun HomeScreen(mainNavController: NavController) {
                 )
 
                 NavigationDrawerItem(
-                    label = { Text("Plant Catalog") },
+                    label = { Text(
+                        "Plant Catalog",
+                        color = Color.Black
+                    ) },
                     selected = false,
+
+                    colors = NavigationDrawerItemDefaults.colors(
+                        unselectedContainerColor = Color.White,
+                        selectedContainerColor = Color(0xFFE0E0E0), // Light gray when selected
+                        unselectedTextColor = Color.Black,
+                        selectedTextColor = Color.Black,
+                        unselectedIconColor = Color.Black,
+                        selectedIconColor = Color.Black
+                    ),
                     onClick = {
                         mainNavController.navigate(Screens.PlantCatalogScreen.route)
                     },
@@ -170,8 +207,20 @@ fun HomeScreen(mainNavController: NavController) {
                 )
 
                 NavigationDrawerItem(
-                    label = { Text("logout") },
+                    label = { Text(
+                        "Logout",
+                        color = Color.Red
+                    ) },
                     selected = false,
+
+                    colors = NavigationDrawerItemDefaults.colors(
+                        unselectedContainerColor = Color.White,
+                        selectedContainerColor = Color(0xFFE0E0E0), // Light gray when selected
+                        unselectedTextColor = Color.Black,
+                        selectedTextColor = Color.Black,
+                        unselectedIconColor = Color.Black,
+                        selectedIconColor = Color.Black
+                    ),
 
                     onClick = {
                         sessionManager.logout()
@@ -183,7 +232,19 @@ fun HomeScreen(mainNavController: NavController) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 NavigationDrawerItem(
-                    label = { Text("Close") },
+                    label = { Text(
+                        "Close",
+                        color = Color.Black
+                    ) },
+
+                    colors = NavigationDrawerItemDefaults.colors(
+                        unselectedContainerColor = Color.White,
+                        selectedContainerColor = Color(0xFFE0E0E0), // Light gray when selected
+                        unselectedTextColor = Color.Black,
+                        selectedTextColor = Color.Black,
+                        unselectedIconColor = Color.Black,
+                        selectedIconColor = Color.Black
+                    ),
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -198,6 +259,8 @@ fun HomeScreen(mainNavController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.heightIn(min = 56.dp)
+                        .background(SoftLeafGreen),
                     title = { Text("HomeScreen") },
                     navigationIcon = {
                         IconButton(
@@ -211,6 +274,13 @@ fun HomeScreen(mainNavController: NavController) {
                             )
                         }
                     },
+
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.White,
+                        titleContentColor = Color.Black,
+                        navigationIconContentColor = Color.Black,
+                        actionIconContentColor = Color.Black
+                    ),
                     actions = {
                         IconButton(onClick = {}) {
                             Icon(
@@ -235,15 +305,14 @@ fun HomeScreen(mainNavController: NavController) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color.White)
                     .padding(innerPadding),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Featured Cities Section
 
                 item{
-                    HomeWeatherCard(
-                        onClick = {}
-                    )
+                    HomeRowCard()
                 }
 
                when(factState){
@@ -291,13 +360,33 @@ fun HomeScreen(mainNavController: NavController) {
 
                     item {
 
-                        Text(
-                            text = "View All Plants",
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
+                        Column {
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(14.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Plants",
+                                    color = Color.Black,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
 
-                    }
+
+                                TextButton(
+                                    onClick = {
+                                        //navController.navigate(Screens.AllNgoScreen.route)
+                                    }
+                                ) {
+                                    Text(
+                                        "View All",
+                                        color = Color.Blue
+                                    )
+                                }
+                            }
+
+                    }}
 
 
                 when (val currentState = state) {

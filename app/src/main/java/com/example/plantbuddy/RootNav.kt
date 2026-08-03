@@ -235,7 +235,7 @@ fun RootNav(innerPadding: PaddingValues) {
                     ?.get<Fact>("fact")
 
             if (fact != null) {
-                FactDetails(fact)
+                FactDetails(mainNavController,fact )
             }
         }
 

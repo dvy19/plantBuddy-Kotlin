@@ -65,7 +65,6 @@ fun HomeWeatherCard(
 
             Card(
                 modifier = modifier
-                    .fillMaxWidth()
                     .padding(16.dp),
                 shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(
@@ -81,7 +80,7 @@ fun HomeWeatherCard(
                 ) {
                     // Header Location Tag
                     Text(
-                        text =weatherData.wind.speed,
+                        text =weatherData.wind.speed.toString(),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         color = MeadowGreen,
@@ -98,7 +97,7 @@ fun HomeWeatherCard(
                     ) {
                         Column {
                             Text(
-                                text = weatherData.main.temp,
+                                text = weatherData.main.temp.toString(),
                                 fontSize = 48.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = ForestGreen
