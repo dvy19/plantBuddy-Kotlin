@@ -1,9 +1,16 @@
 package com.example.plantbuddy.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.outlined.WbSunny
+import androidx.compose.material.icons.outlined.WaterDrop
+import androidx.compose.material.icons.outlined.Grain
 import androidx.compose.material.icons.rounded.Air
 import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material3.*
@@ -15,25 +22,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.plantbuddy.NGO.Screens.MeadowGreen
+import com.example.plantbuddy.NGO.Screens.SageOutline
+import com.example.plantbuddy.NGO.Screens.SoftLeafGreen
+import com.example.plantbuddy.NGO.Screens.ForestGreen
 import com.example.plantbuddy.weather.WeatherState
 import com.example.plantbuddy.weather.WeatherViewModel
 import okhttp3.internal.notify
 
-// Professional gradient definition
-val WeatherCardGradient = Brush.linearGradient(
-    colors = listOf(
-        Color(0xFF2C3E50), // Dark Slate
-        Color(0xFF3498DB)  // Sky Blue
-    )
-)
 
 @Composable
 fun HomeWeatherCard(
+
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -59,97 +64,128 @@ fun HomeWeatherCard(
             val weatherData=state.data
 
             Card(
-                onClick = onClick,
-                shape = RoundedCornerShape(24.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                 modifier = modifier
                     .fillMaxWidth()
-                    .height(200.dp) // Ideal fixed height for a homescreen widget-style card
+                    .padding(16.dp),
+                shape = RoundedCornerShape(28.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = SoftLeafGreen
+                ),
+                border = androidx.compose.foundation.BorderStroke(1.dp, SageOutline),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                Box(
+                Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(WeatherCardGradient)
-                        .padding(20.dp)
+                        .fillMaxWidth()
+                        .padding(24.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.SpaceBetween
+                    // Header Location Tag
+                    Text(
+                        text =weatherData.wind.speed,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MeadowGreen,
+                        letterSpacing = 1.2.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Main Weather Header Row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Top Row: name and humidity
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.Top
-                        ) {
-                            Column {
-                                Text(
-                                    text = weatherData.name,
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = Color.White.copy(alpha = 0.9f)
-                                    )
-                                )
-
-                                Text(
-                                    text = "Sunrise: ${weatherData.sys.sunrise}%",
-                                    style = MaterialTheme.typography.labelMedium.copy(
-                                        color = Color.White.copy(alpha = 0.8f)
-                                    )
-                                )
-                            }
-
-                            // Temperature badge / High & Low
+                        Column {
                             Text(
-                                text = "H: ${weatherData.main.temp}°",
-                                style = MaterialTheme.typography.labelMedium.copy(
-                                    color = Color.White.copy(alpha = 0.8f)
-                                )
-                            )
-                        }
-
-                        // Middle Row: Main Temperature
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "${weatherData.main.temp}°",
-                                fontSize = 56.sp,
+                                text = weatherData.main.temp,
+                                fontSize = 48.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White,
-                                lineHeight = 56.sp
+                                color = ForestGreen
                             )
-
-                            // Optional: Weather Icon (Replace Icon with AsyncImage if loading from URL)
-                            Icon(
-                                imageVector = Icons.Rounded.WaterDrop, // Placeholder for Weather Condition Icon
-                                contentDescription = weatherData.name,
-                                tint = Color.White,
-                                modifier = Modifier.size(48.dp)
+                            Text(
+                                text = weatherData.name,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MeadowGreen
                             )
                         }
 
-                        // Bottom Row: Secondary Metrics (Humidity, Wind)
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        // Weather Icon Container
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .background(ForestGreen, shape = CircleShape),
+                            contentAlignment = Alignment.Center
                         ) {
-                            WeatherDetailChip(
-                                icon = Icons.Rounded.WaterDrop,
-                                label = "${weatherData.main.humidity}%"
-                            )
-                            WeatherDetailChip(
-                                icon = Icons.Rounded.Air,
-                                label = "${weatherData.wind.speed} km/h"
+                            Icon(
+                                imageVector = Icons.Filled.WbSunny,
+                                contentDescription = "Weather condition icon",
+                                tint = SoftLeafGreen,
+                                modifier = Modifier.size(36.dp)
                             )
                         }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Subtle Divider
+                    HorizontalDivider(
+                        color = SageOutline.copy(alpha = 0.5f),
+                        thickness = 1.dp
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Weather Details Grid (2 Rows)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        WeatherDetailItem(
+                            icon = Icons.Outlined.WaterDrop,
+                            label = "Humidity",
+                            value = weatherData.main.humidity.toString(),
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        WeatherDetailItem(
+                            icon = Icons.Outlined.Grain,
+                            label = "Rainfall",
+                            value = weatherData.rain.toString(),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        WeatherDetailItem(
+                            icon = Icons.Outlined.WbSunny,
+                            label = "Sunrise",
+                            value = weatherData.sys.sunrise.toString(),
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        // Optional 4th metric placeholder or empty space for balance
+                        WeatherDetailItem(
+                            icon = Icons.Outlined.WaterDrop,
+                            label = "Soil Moisture",
+                            value = "Optimal (75%)",
+                            modifier = Modifier.weight(1f)
+                        )
                     }
                 }
             }
 
-        }
+
+                }
+
+
+
 
         is WeatherState.Error -> {
 
@@ -159,31 +195,47 @@ fun HomeWeatherCard(
 }
 
 @Composable
-private fun WeatherDetailChip(
+private fun WeatherDetailItem(
     icon: ImageVector,
-    label: String
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
 ) {
-    Surface(
-        color = Color.White.copy(alpha = 0.15f),
-        shape = RoundedCornerShape(12.dp)
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        // Metric Icon Container
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .background(Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(10.dp))
+                .border(0.5.dp, SageOutline.copy(alpha = 0.6f), RoundedCornerShape(10.dp)),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(16.dp)
+                contentDescription = label,
+                tint = MeadowGreen,
+                modifier = Modifier.size(20.dp)
             )
+        }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        // Text Content
+        Column {
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelSmall.copy(
-                    color = Color.White,
-                    fontWeight = FontWeight.Medium
-                )
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
+                color = MeadowGreen.copy(alpha = 0.8f)
+            )
+            Text(
+                text = value,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = ForestGreen
             )
         }
     }

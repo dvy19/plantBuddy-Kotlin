@@ -40,10 +40,10 @@ import com.example.plantbuddy.NGO.details.NgoDetailsVM
 import com.example.plantbuddy.auth.SessionManager
 
 // --- Plant App Color Palette ---
-private val ForestGreen = Color(0xFF1E3A27)
-private val MeadowGreen = Color(0xFF2E6F40)
-private val SoftLeafGreen = Color(0xFFE8F2EA)
-private val SageOutline = Color(0xFFA8C3AD)
+val ForestGreen = Color(0xFF1E3A27)
+val MeadowGreen = Color(0xFF2E6F40)
+ val SoftLeafGreen = Color(0xFFE8F2EA)
+val SageOutline = Color(0xFFA8C3AD)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
