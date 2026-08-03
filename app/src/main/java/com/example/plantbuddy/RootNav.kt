@@ -39,6 +39,11 @@ import androidx.compose.runtime.getValue
 import com.example.plantbuddy.NGO.NgoBottomNavBar
 import com.example.plantbuddy.NGO.NgoLoginScreen
 import com.example.plantbuddy.NGO.NgoProfileScreen
+import com.example.plantbuddy.NGO.Screens.NgoDetailScreen
+import com.example.plantbuddy.NGO.campaign.Campaign
+import com.example.plantbuddy.screens.community.CampaignDetailScreen
+import com.example.plantbuddy.screens.community.CommunityScreen
+import com.example.plantbuddy.screens.community.NgoAllActiveCampaigns
 
 @Composable
 fun RootNav(innerPadding: PaddingValues) {
@@ -87,6 +92,11 @@ fun RootNav(innerPadding: PaddingValues) {
                 PlantCatalogScreen(mainNavController)
             }
 
+            composable(Screens.CommunityScreen.route){
+                CommunityScreen(mainNavController)
+            }
+
+
             composable(Screens.GetStartScreen.route) {
                 GetStartScreen(
                     onUserSelected = {
@@ -108,6 +118,63 @@ fun RootNav(innerPadding: PaddingValues) {
 
             composable(Screens.NgoHomeScreen.route){
                 NgoHome(mainNavController)
+            }
+
+
+            composable(
+                route = Screens.NgoDetailScreen.route,
+                arguments = listOf(
+                    navArgument("id") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+
+                val id = backStackEntry.arguments?.getInt("id")
+
+                    NgoDetailScreen(
+                    mainNavController = mainNavController,
+                    ngoId= id
+                )
+            }
+
+
+            composable(
+                route = Screens.CampaignDetailScreen.route,
+                arguments = listOf(
+                    navArgument("id") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+
+                val id = backStackEntry.arguments?.getInt("id")
+
+                CampaignDetailScreen(
+                    mainNavController = mainNavController,
+                    campaign_id= id,
+
+                    )
+            }
+
+
+
+
+            composable(
+                route = Screens.NgoAllActiveCampaigns.route,
+                arguments = listOf(
+                    navArgument("id") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+
+                val id = backStackEntry.arguments?.getInt("id")
+
+                NgoAllActiveCampaigns(
+                    mainNavController = mainNavController,
+                    ngo_id= id
+                )
             }
 
             composable(Screens.NgoCreateCampaignScreen.route){
@@ -134,10 +201,11 @@ fun RootNav(innerPadding: PaddingValues) {
 
             composable(Screens.LoginScreen.route) {
                 LoginScreen(
+                    mainNavController,
                     onNavigateToRegister = {
                         mainNavController.navigate("signup")
                     },
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
                 )
             }
 

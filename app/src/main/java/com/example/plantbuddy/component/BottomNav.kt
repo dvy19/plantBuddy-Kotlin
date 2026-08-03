@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Person
@@ -80,6 +81,16 @@ fun BottomNav(
                     selected = currentRoute == Screens.WishlistScreen.route
                 ) {
                     mainNavController.navigate(Screens.WishlistScreen.route) {
+                        popUpTo(mainNavController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
+                }
+
+                BottomItem(
+                    icon = Icons.Default.Groups,
+                    selected = currentRoute == Screens.CommunityScreen.route
+                ) {
+                    mainNavController.navigate(Screens.CommunityScreen.route) {
                         popUpTo(mainNavController.graph.startDestinationId)
                         launchSingleTop = true
                     }

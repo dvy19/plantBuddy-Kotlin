@@ -21,6 +21,21 @@ sealed class GetNgoProfileState{
     data class Success(val data: NgoDetailsResponse): GetNgoProfileState()
     data class Error(val message: String): GetNgoProfileState()
 }
+
+sealed class GetAllNgoState{
+    object Idle: GetAllNgoState()
+    object Loading: GetAllNgoState()
+    data class Success(val data: List<NgoDetailsData>): GetAllNgoState()
+    data class Error(val message: String): GetAllNgoState()
+}
+
+sealed class GetSingleNgoState{
+    object Idle: GetSingleNgoState()
+    object Loading: GetSingleNgoState()
+    data class Success(val data: NgoDetailsData): GetSingleNgoState()
+    data class Error(val message: String): GetSingleNgoState()
+}
+
 class NgoDetailsVM(
     private val repo: NgoDetailsRepo
 ) : ViewModel() {
@@ -30,6 +45,12 @@ class NgoDetailsVM(
 
     val _getProfileState = MutableStateFlow<GetNgoProfileState>(GetNgoProfileState.Idle)
     val getProfileState = _getProfileState.asStateFlow()
+
+    private val _getAllNgoState = MutableStateFlow<GetAllNgoState>(GetAllNgoState.Idle)
+    val getAllNgoState = _getAllNgoState.asStateFlow()
+
+    private val _getSingleNgoState = MutableStateFlow<GetSingleNgoState>(GetSingleNgoState.Idle)
+    val getSingleNgoState = _getSingleNgoState.asStateFlow()
 
 
     fun createNgoProfile(
@@ -90,4 +111,44 @@ class NgoDetailsVM(
         }
     }
 
+    fun getAllNgo(){
+
+        _getAllNgoState.value = GetAllNgoState.Loading
+        viewModelScope.launch {
+            try {
+                val response = repo.get_all_ngo()
+
+               if(response.body()!=null && response.isSuccessful){
+                   _getAllNgoState.value = GetAllNgoState.Success(response.body()!!.data)
+
+
+                } else {
+                    _getAllNgoState.value = GetAllNgoState.Error(response.message())
+                }
+            } catch (e: Exception) {
+                _getAllNgoState.value = GetAllNgoState.Error(e.message ?: "Unknown Error")
+                }
+
+        }
+    }
+
+    fun getSingleNgo(id: Int){
+        _getSingleNgoState.value = GetSingleNgoState.Loading
+        viewModelScope.launch {
+            try {
+                val response = repo.get_single_ngo(id)
+
+                if(response.body()!=null && response.isSuccessful){
+                    _getSingleNgoState.value = GetSingleNgoState.Success(response.body()!!.data)
+
+                } else {
+                    _getSingleNgoState.value = GetSingleNgoState.Error(response.message())
+                }
+            } catch (e: Exception) {
+                _getSingleNgoState.value = GetSingleNgoState.Error(e.message ?: "Unknown Error")
+            }
+
+                }
+    }
 }
+

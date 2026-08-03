@@ -8,6 +8,7 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface NgoApiInterface {
 
@@ -32,6 +33,17 @@ interface NgoApiInterface {
         @Part logo: MultipartBody.Part?
 
     ): Response<NgoDetailsResponse>
+
+    @GET("api/ngo/get/")
+    suspend fun allNgo(
+        @Header("Authorization") token: String
+    ) : Response<AllNgoResponse>
+
+    @GET("api/ngo/get/{id}")
+    suspend fun getSingleNgo(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ) : Response<NgoDetailsResponse>
 
     @GET("api/ngo/profile/")
     suspend fun getNgoProfile(

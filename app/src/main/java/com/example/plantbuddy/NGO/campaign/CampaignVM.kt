@@ -24,6 +24,13 @@ sealed class GetCampaignState{
     data class Error(val message: String) : GetCampaignState()
 }
 
+sealed class GetSingleCampaignState{
+    object Idle : GetSingleCampaignState()
+    object Loading : GetSingleCampaignState()
+    data class Success(val data: Campaign) : GetSingleCampaignState()
+    data class Error(val message: String) : GetSingleCampaignState()
+}
+
 
 sealed class GetActiveCampaignState{
     object Idle : GetActiveCampaignState()
@@ -41,6 +48,9 @@ class CampaignVM(
 
     private val _getActiveCampaignState = MutableStateFlow<GetActiveCampaignState>(GetActiveCampaignState.Idle)
     val getActiveCampaignState: StateFlow<GetActiveCampaignState> = _getActiveCampaignState.asStateFlow()
+
+    private val _getSingleCampaignState = MutableStateFlow<GetSingleCampaignState>(GetSingleCampaignState.Idle)
+    val getSingleCampaignState: StateFlow<GetSingleCampaignState> = _getSingleCampaignState.asStateFlow()
 
     fun createNgoCampaign(
 
@@ -108,13 +118,13 @@ class CampaignVM(
 
      */
 
-    fun getActiveCampaign(is_active: Boolean) {
+    fun getActiveCampaign(is_active: Boolean , ngo_id:Int?) {
 
         viewModelScope.launch {
             _getActiveCampaignState.value = GetActiveCampaignState.Loading
 
             try{
-                val response = repo.get_active_campaigns(is_active)
+                val response = repo.get_active_campaigns(is_active , ngo_id)
 
                 if(response.isSuccessful){
                     _getActiveCampaignState.value = GetActiveCampaignState.Success(response.body()!!.data)
@@ -131,6 +141,24 @@ class CampaignVM(
     }
 
 
+    fun getSingleCampaign(id: Int) {
+        viewModelScope.launch {
+            _getSingleCampaignState.value = GetSingleCampaignState.Loading
+            try {
+                val response = repo.get_single_campaign(id)
+
+                if (response.isSuccessful) {
+                    _getSingleCampaignState.value = GetSingleCampaignState.Success(response.body()!!.data)
+                } else {
+                    _getSingleCampaignState.value = GetSingleCampaignState.Error(response.message())
+                }
+                } catch (e: Exception) {
+                _getSingleCampaignState.value = GetSingleCampaignState.Error(e.message ?: "An error occurred")
+            }
+
+        }
+
+    }
 
 }
 

@@ -51,11 +51,20 @@ class CampaignRepo (
 
         }
 
-    suspend fun get_active_campaigns(is_active: Boolean) : Response<AllCampaignResponse>{
+    suspend fun get_active_campaigns(is_active: Boolean , ngo_id: Int?) : Response<AllCampaignResponse>{
         return api.getCampaigns(
             "Bearer $token",
-            is_active
+            is_active , ngo_id
         )
     }
 
+
+    suspend fun get_single_campaign(id: Int) : Response<SingleCampaignResponse>{
+        return api.getSingleCampaign(
+            "Bearer $token",
+            id
+        )
+
+    }
 }
+

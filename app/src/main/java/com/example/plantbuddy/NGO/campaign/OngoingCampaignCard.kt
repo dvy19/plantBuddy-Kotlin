@@ -48,7 +48,7 @@ fun OngoingCampaignCard(
     LaunchedEffect(Unit)
     {
 
-        viewModel.getActiveCampaign(true)
+        viewModel.getActiveCampaign(true  , null)
     }
 
 

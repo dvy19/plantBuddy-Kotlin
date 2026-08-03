@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.SessionManager
 import kotlinx.coroutines.delay
 // Assuming CreamBackground is defined in your theme, or use Color(0xFFFDFBF7)
@@ -58,7 +59,7 @@ fun SplashScreen(
         mainNavController.navigate("ngo_home")
     }
     else if(accessToken !=null && role=="user"){
-        mainNavController.navigate("user_home")
+        mainNavController.navigate(Screens.HomeScreen.route)
     }
     else{
         mainNavController.navigate("get_start")

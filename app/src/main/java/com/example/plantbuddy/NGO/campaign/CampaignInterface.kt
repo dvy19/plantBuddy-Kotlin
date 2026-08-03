@@ -9,6 +9,7 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface CampaignInterface {
 
@@ -37,11 +38,18 @@ interface CampaignInterface {
 
     ) : Response<SingleCampaignResponse>
 
-
     @GET("api/ngo/campaigns/")
     suspend fun getCampaigns(
         @Header("Authorization") token: String,
-        @Query("is_active") is_active: Boolean,
-    ) : Response<AllCampaignResponse>
+        @Query("is_active") isActive: Boolean? = null,
+        @Query("ngo_id") ngoId: Int? = null
+    ): Response<AllCampaignResponse>
+
+    @GET("api/ngo/campaigns/{id}")
+    suspend fun getSingleCampaign(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<SingleCampaignResponse>
+
 
 }

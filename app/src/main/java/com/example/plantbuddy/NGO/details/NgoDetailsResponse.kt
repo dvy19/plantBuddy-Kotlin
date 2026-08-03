@@ -6,6 +6,12 @@ data class NgoDetailsResponse(
     val data: NgoDetailsData
 )
 
+data class AllNgoResponse(
+
+    var message: String,
+    var data:List<NgoDetailsData>
+)
+
 data class NgoDetailsData(
     val id: Int,
     val name: String,

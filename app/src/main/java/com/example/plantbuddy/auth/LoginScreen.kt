@@ -23,7 +23,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,12 +38,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.plantbuddy.Screens
 import com.example.plantbuddy.userDetails.DetailViewModel
 import com.example.plantbuddy.userDetails.UserDetailRepo
 
 
 @Composable
 fun LoginScreen(
+    mainNavController:NavController,
     onNavigateToRegister: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -54,6 +57,8 @@ fun LoginScreen(
     val focusManager = LocalFocusManager.current
 
     val viewModel: AuthViewModel  = viewModel()
+
+    val loginState by viewModel.loginState.collectAsState()
 
 
 
@@ -150,10 +155,23 @@ fun LoginScreen(
                     .height(50.dp),
                 shape = MaterialTheme.shapes.medium
             ) {
-                Text(
-                    text = "Register",
-                    style = MaterialTheme.typography.titleMedium
-                )
+                when(loginState){
+
+                    is LoginState.Idle -> {
+                        Text(text = "Login")
+                    }
+                    is LoginState.Loading -> {
+                        Text(text = "Loading")
+                        }
+                    is LoginState.Success -> {
+                        mainNavController.navigate(Screens.HomeScreen.route)
+                        Text(text = "Success")
+                    }
+                    is LoginState.Error -> {
+                        Text(text = "Error")
+                    }
+
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))

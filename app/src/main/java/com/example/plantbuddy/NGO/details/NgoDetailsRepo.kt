@@ -57,12 +57,22 @@ class NgoDetailsRepo(
 
         }
 
+
+
     suspend fun get_ngo_profile() : Response<NgoDetailsResponse> {
 
         return api.getNgoProfile("Bearer $token")
     }
 
 
+    suspend fun get_all_ngo(): Response<AllNgoResponse>{
+        return api.allNgo("Bearer $token")
+    }
+
+
+    suspend fun get_single_ngo(id: Int): Response<NgoDetailsResponse> {
+        return api.getSingleNgo("Bearer $token", id)
+    }
 }
 
 
