@@ -75,7 +75,7 @@ fun BottomNav(
                     mainNavController.navigate(Screens.HomeScreen.route)
                 }
 
-
+/*
                 BottomItem(
                     icon = Icons.Default.Explore,
                     selected = currentRoute == Screens.WishlistScreen.route
@@ -85,6 +85,8 @@ fun BottomNav(
                         launchSingleTop = true
                     }
                 }
+
+ */
 
                 BottomItem(
                     icon = Icons.Default.Groups,

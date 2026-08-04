@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.plantbuddy.auth.AuthViewModel
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Park
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
@@ -42,6 +44,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -55,6 +58,8 @@ import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.RegisterState
 import com.example.plantbuddy.auth.SessionManager
 import com.example.plantbuddy.auth.SignupRequest
+import com.example.plantbuddy.screens.ForestGreen
+import com.example.plantbuddy.screens.SoftWhiteBackground
 import com.example.plantbuddy.userDetails.DetailViewModel
 import com.example.plantbuddy.userDetails.GetProfileState
 import com.example.plantbuddy.userDetails.GetProfileState.Idle
@@ -71,17 +76,22 @@ fun UserProfileScreenLayout(
     val accessToken=sessionManager.getAccessToken()
 
     val repo= UserDetailRepo(sessionManager)
-    val viewModel= DetailViewModel(repo)
+
+    val viewModel: DetailViewModel=viewModel{
+        DetailViewModel(repo)
+    }
+
     val getProfileState by viewModel.getProfileState.collectAsState()
+
     Log.d("maccess token",accessToken.toString())
     if(accessToken==null){
 
         LandingScreen(
             onEnterClick = {
-                mainNavController.navigate(Screens.RegisterScreen.route)
+                mainNavController.navigate(Screens.LoginScreen.route)
             },
             onCreateAccountClick = {
-                mainNavController.navigate(Screens.LoginScreen.route)
+                mainNavController.navigate(Screens.RegisterScreen.route)
             }
 
         )
@@ -99,7 +109,7 @@ fun UserProfileScreenLayout(
         when(getProfileState){
 
 
-            is GetProfileState.Idle -> {
+            is Idle -> {
                 Log.d("m",getProfileState.toString())
 
 
@@ -107,10 +117,31 @@ fun UserProfileScreenLayout(
             is GetProfileState.Loading -> {
                 Log.d("m",getProfileState.toString())
 
-                CircularProgressIndicator()
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = ForestGreen
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = "Loading...",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
+                }
             }
             is GetProfileState.Success -> {
-                Log.d("m",getProfileState.toString())
+                Log.d("GetProfileState.Success -> {",getProfileState.toString())
 
                 val userdata=(getProfileState as GetProfileState.Success).data
 
@@ -132,19 +163,31 @@ fun UserProfileScreenLayout(
             is GetProfileState.Error -> {
                 Log.d("m",getProfileState.toString())
 
-                Text((getProfileState as GetProfileState.Error).message)
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = ForestGreen
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = "Error Loading Data",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
+                }
             }
 
         }
-
-
-
-
-
-
-
-
-
     }
 
 }
@@ -167,9 +210,14 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Profile") },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                title = { Text(
+                    "Profile",
+                    color=Color.Black
+
+                                    ) },
+
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = SoftWhiteBackground
                 )
             )
         },
@@ -178,6 +226,7 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(innerPadding)
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -189,13 +238,13 @@ fun ProfileScreen(
                 modifier = Modifier
                     .size(96.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                    .background(Color.White),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = userName.take(1).uppercase(),
                     style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -207,22 +256,23 @@ fun ProfileScreen(
                 text = userName,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+                color = Color.Black,            )
 
             // User Email
             Text(
                 text = userEmail,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+                color = Color.Black,            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             // City Badge / Chip
             AssistChip(
                 onClick = { },
-                label = { Text(userCity) },
+                label = { Text(
+                    userCity,
+                    color = Color.White,
+                ) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.LocationOn,
@@ -236,7 +286,7 @@ fun ProfileScreen(
             )
 
             Spacer(modifier = Modifier.height(32.dp))
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            HorizontalDivider(color = Color.Gray)
             Spacer(modifier = Modifier.height(16.dp))
 
             // Navigation Actions List
@@ -261,11 +311,25 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             // Logout Action (styled distinctly with destructive color)
-            ProfileMenuItem(
-                icon = Icons.Default.ExitToApp,
-                title = "Log Out",
-                onClick = onLogoutClick,
-                isDestructive = true
+            AssistChip(
+                onClick = {
+                    onLogoutClick()
+                },
+                label = { Text(
+                    "LogOut",
+                    color = Color.Red,
+                ) },
+                modifier=Modifier.fillMaxWidth(),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Logout,
+                        contentDescription = null,
+                        modifier = Modifier.size(AssistChipDefaults.IconSize)
+                    )
+                },
+                colors = AssistChipDefaults.assistChipColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                )
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -289,6 +353,7 @@ private fun ProfileMenuItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(Color.White)
             .clip(MaterialTheme.shapes.medium)
             .clickable(onClick = onClick)
             .padding(vertical = 14.dp, horizontal = 12.dp),
@@ -297,7 +362,7 @@ private fun ProfileMenuItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = contentColor,
+            tint = Color.Gray,
             modifier = Modifier.size(24.dp)
         )
 
@@ -306,7 +371,7 @@ private fun ProfileMenuItem(
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
-            color = contentColor,
+            color = Color.Black,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.weight(1f)
         )
@@ -315,7 +380,7 @@ private fun ProfileMenuItem(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = Color.Gray
             )
         }
     }
@@ -332,15 +397,17 @@ fun LandingScreen(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        modifier = modifier.fillMaxSize()
+            .background(Color.White),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Center,
+
         ) {
             // Spacer to push content down nicely
             Spacer(modifier = Modifier.height(32.dp))
@@ -354,7 +421,7 @@ fun LandingScreen(
                     text = "Welcome",
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
+                    color= Color.Black,
                     textAlign = TextAlign.Center
                 )
 
@@ -363,10 +430,13 @@ fun LandingScreen(
                 Text(
                     text = "Manage your account, view your profile, and explore seamlessly.",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color= Color.Black,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
             }
 
             // Bottom Action Area
@@ -384,7 +454,8 @@ fun LandingScreen(
                     shape = MaterialTheme.shapes.medium
                 ) {
                     Text(
-                        text = "Enter",
+                        text = "Login and Continue",
+                        color= Color.Black,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -405,6 +476,7 @@ fun LandingScreen(
                 ) {
                     Text(
                         text = "Create Account",
+                        color= Color.Black,
                         style = MaterialTheme.typography.titleMedium
                     )
                 }

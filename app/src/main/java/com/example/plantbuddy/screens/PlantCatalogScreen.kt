@@ -5,8 +5,11 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -66,7 +69,7 @@ fun PlantCatalogScreen(
     val context= LocalContext.current
     val sessionManager=SessionManager(context)
 
-
+    val gridState = rememberLazyGridState()
 // Wrap in remember so we don't recreate instances on every frame/recomposition
     val personalViewModel: PersonalPlantVM = viewModel(
         factory = remember(context) {
@@ -220,6 +223,7 @@ fun PlantCatalogScreen(
                             }
 
                             LazyVerticalGrid(
+                                state=gridState,
                                 columns = GridCells.Fixed(2),
                                 contentPadding = PaddingValues(16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -252,6 +256,20 @@ fun PlantCatalogScreen(
 
                                         }
                                     )
+                                }
+                            }
+                        }
+
+                        LaunchedEffect(gridState) {
+                            snapshotFlow {
+                                val layoutInfo = gridState.layoutInfo
+
+                                layoutInfo.totalItemsCount -
+                                        (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0)
+                            }.collect { remainingItems ->
+
+                                if (remainingItems <= 4) {
+                                    viewModel.loadNextPage()
                                 }
                             }
                         }

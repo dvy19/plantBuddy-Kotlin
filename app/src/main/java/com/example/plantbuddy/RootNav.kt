@@ -55,6 +55,9 @@ fun RootNav(innerPadding: PaddingValues) {
     val bottomBarRoutes = listOf(
 
         Screens.HomeScreen.route,
+        Screens.PlantCatalogScreen.route,
+        Screens.CommunityScreen.route,
+        Screens.UserProfileScreenLayout.route,
     )
 
     val ngoRoutes=listOf(

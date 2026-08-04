@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,19 +18,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.plantbuddy.auth.SessionManager
 import com.example.plantbuddy.room.WaterStreakVMFactory
+import com.example.plantbuddy.screens.EmeraldPrimary
+import com.example.plantbuddy.screens.SoftWhiteBackground
+import com.example.plantbuddy.screens.TextDark
 import com.example.plantbuddy.waterStreak.GetWaterStreakState
 import com.example.plantbuddy.waterStreak.WaterLogRepo
 import com.example.plantbuddy.waterStreak.WaterLogReq
 import com.example.plantbuddy.waterStreak.WaterPlantState
 import com.example.plantbuddy.waterStreak.WaterViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WaterStreakScreen(
     mainNavController: NavHostController,
@@ -62,103 +70,112 @@ fun WaterStreakScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        when (val state = streakState) {
-            is GetWaterStreakState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
+    Scaffold(
+        containerColor = Color(0xFFF8FAF7)
+    ) { paddingValues ->
 
-            is GetWaterStreakState.Success -> {
-                val data = state.data
-                val wateredDatesSet = remember(data.watered_dates) {
-                    data.watered_dates.mapNotNull {
-                        try { LocalDate.parse(it) } catch (e: Exception) { null }
-                    }.toSet()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(paddingValues)
+        ) {
+            when (val state = streakState) {
+                is GetWaterStreakState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Header: Streak Counter
-                    Text(
-                        text = "🔥 ${data.streak} Day Streak",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
+                is GetWaterStreakState.Success -> {
+                    val data = state.data
+                    val wateredDatesSet = remember(data.watered_dates) {
+                        data.watered_dates.mapNotNull {
+                            try { LocalDate.parse(it) } catch (e: Exception) { null }
+                        }.toSet()
+                    }
 
-                    // Basic Calendar Grid
-                    MinimalCalendarGrid(wateredDates = wateredDatesSet)
-
-                    // Today's Action Card
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (data.watered_today) Color(0xFFE8F5E9) else MaterialTheme.colorScheme.surfaceVariant
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        // Header: Streak Counter
+                        Text(
+                            text = "🔥 ${data.streak} Day Streak",
+                            fontSize = 22.sp,
+                            color=Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 12.dp)
                         )
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+
+                        // Basic Calendar Grid
+                        MinimalCalendarGrid(wateredDates = wateredDatesSet)
+
+                        // Today's Action Card
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (data.watered_today) Color(0xFFE8F5E9) else MaterialTheme.colorScheme.surfaceVariant
+                            )
                         ) {
-                            Column {
-                                Text(text = "Water Plant Today", fontWeight = FontWeight.SemiBold)
-                                Text(
-                                    text = LocalDate.now().format(DateTimeFormatter.ofPattern("MMM d, yyyy")),
-                                    fontSize = 12.sp,
-                                    color = MaterialTheme.colorScheme.outline
-                                )
-                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column {
+                                    Text(text = "Water Plant Today", fontWeight = FontWeight.SemiBold)
+                                    Text(
+                                        text = LocalDate.now().format(DateTimeFormatter.ofPattern("MMM d, yyyy")),
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.outline
+                                    )
+                                }
 
-                            if (waterState is WaterPlantState.Loading) {
-                                CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
-                            } else {
-                                Checkbox(
-                                    checked = data.watered_today,
-                                    onCheckedChange = { isChecked ->
-                                        if (isChecked) {
-                                            plantId?.let {
-                                                viewModel.waterPlant(WaterLogReq(plant = plantId))
+                                if (waterState is WaterPlantState.Loading) {
+                                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                                } else {
+                                    Checkbox(
+                                        checked = data.watered_today,
+                                        onCheckedChange = { isChecked ->
+                                            if (isChecked) {
+                                                plantId?.let {
+                                                    viewModel.waterPlant(WaterLogReq(plant = plantId))
+                                                }
                                             }
-                                        }
-                                    },
-                                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF4CAF50))
-                                )
+                                        },
+                                        colors = CheckboxDefaults.colors(checkedColor = Color(0xFF4CAF50))
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            is GetWaterStreakState.Error -> {
-                Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = state.message, color = MaterialTheme.colorScheme.error)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = {
-                            plantId?.let {
-                                viewModel.getWaterStreak(it)
-                            }
-                        }
+                is GetWaterStreakState.Error -> {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Retry")
+                        Text(text = state.message, color = MaterialTheme.colorScheme.error)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = {
+                                plantId?.let {
+                                    viewModel.getWaterStreak(it)
+                                }
+                            }
+                        ) {
+                            Text(text = "Retry")
+                        }
                     }
                 }
-            }
 
-            GetWaterStreakState.Idle -> {}
+                GetWaterStreakState.Idle -> {}
+            }
         }
+
     }
 }
 
@@ -233,4 +250,11 @@ fun MinimalCalendarGrid(wateredDates: Set<LocalDate>) {
             }
         }
     }
+}
+
+
+@Preview
+@Composable
+fun PreviewWater(){
+    WaterStreakScreen(mainNavController = rememberNavController(), plantId = 1)
 }

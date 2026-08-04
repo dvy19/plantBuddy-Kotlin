@@ -1,5 +1,6 @@
 package com.example.plantbuddy.userDetails
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,7 +24,6 @@ sealed class GetProfileState{
     data class Success(val data: Userdata) : GetProfileState()
     data class Error(val message: String) : GetProfileState()
 
-
 }
 class DetailViewModel (
     val repo: UserDetailRepo
@@ -33,7 +33,7 @@ class DetailViewModel (
     val createProfileState: StateFlow<CreateProfileState> = _createProfileState
 
     private val _getProfileState = MutableStateFlow<GetProfileState>(GetProfileState.Idle)
-    val getProfileState: StateFlow<GetProfileState> = _getProfileState
+    val getProfileState: StateFlow<GetProfileState> = _getProfileState.asStateFlow()
 
     fun createUserProfile(request: UserDetailReq){
 
@@ -77,7 +77,19 @@ class DetailViewModel (
             try {
                 val response = repo.get_user_profile()
 
+                Log.d("m",response.toString())
+                println(response)
+                println(response.body())
+                println(response.isSuccessful)
+                println(response.code())
+                println(response.errorBody())
+
                 if(response.isSuccessful && response.body()!=null){
+                    Log.d("m",response.toString())
+                    Log.d("m",response.body().toString())
+                    Log.d("isSucess",response.isSuccessful.toString())
+                    Log.d("m",response.code().toString())
+                    Log.d("m",response.errorBody().toString())
                     _getProfileState.value = GetProfileState.Success(response.body()!!.data)
                 }
                 else{

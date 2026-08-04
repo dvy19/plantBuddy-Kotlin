@@ -69,6 +69,8 @@ class PlantViewModel(
     private val allPlants = mutableListOf<Plant>()
 
     var currentSearch = ""
+    private var isLoadingMore = false
+
     fun getAllPlants(page: Int = 1, search:String = currentSearch) {
 
         viewModelScope.launch {
@@ -82,22 +84,6 @@ class PlantViewModel(
             try {
 
                 val response = repo.get_all_plants(page  , search)
-
-                /*
-                Log.d("m", response.body().toString())
-
-                Log.d("m", response.message())
-
-                Log.d("m", response.code().toString())
-
-                Log.d("m", response.isSuccessful.toString())
-
-                Log.d("m", response.errorBody().toString())
-
-                Log.d("m", response.raw().toString())
-
-                 */
-
 
                 if (response.isSuccessful && response.body() != null) {
 
@@ -116,6 +102,8 @@ class PlantViewModel(
                         next = body.next,
                         previous = body.previous
                     )
+
+                    isLoadingMore = false
                 } else {
                     Log.d("m", getPlantsState.value.toString())
 
@@ -140,8 +128,10 @@ class PlantViewModel(
 
     fun loadNextPage() {
 
-        if (!hasNextPage)
-            return
+        if (!hasNextPage || isLoadingMore) return
+
+        isLoadingMore = true
+
 
         getAllPlants(currentPage + 1)
 
