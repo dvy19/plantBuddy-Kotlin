@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.plantbuddy.NGO.createImagePart
 import com.example.plantbuddy.auth.SessionManager
 
@@ -93,31 +95,6 @@ fun NgoDetailsForm(
         }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Register NGO",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = ForestGreen
-                        )
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = "Back",
-                            tint = ForestGreen
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF9FBF9)
-                )
-            )
-        },
         containerColor = Color(0xFFF9FBF9)
     ) { innerPadding ->
         Column(
@@ -143,35 +120,46 @@ fun NgoDetailsForm(
                 modifier = Modifier
                     .size(110.dp)
                     .clip(CircleShape)
-                    .clickable{
-                        launcher.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
-                        )
-                    }
+
                     .background(SoftLeafGreen)
-                    .border(2.dp, SageOutline, CircleShape)
-                    .clickable { logoSelected = !logoSelected },
+                    .border(2.dp, SageOutline, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.AddAPhoto,
-                        contentDescription = "Upload Logo",
-                        tint = MeadowGreen,
-                        modifier = Modifier.size(32.dp)
+                if (selectedImageUri != null) {
+
+                    AsyncImage(
+                        model = selectedImageUri,
+                        contentDescription = "Selected Logo",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = if (logoSelected) "Logo Added" else "Upload Logo",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MeadowGreen,
-                        fontWeight = FontWeight.SemiBold
-                    )
+
+                } else {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.AddAPhoto,
+                            contentDescription = "Upload Logo",
+                            tint = MeadowGreen,
+                            modifier = Modifier.size(32.dp)
+                                .clickable {
+                                    launcher.launch(
+                                        PickVisualMediaRequest(
+                                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                                        )
+                                    )
+                                }
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = if (logoSelected) "Logo Added" else "Upload Logo",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MeadowGreen,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
 

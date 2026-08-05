@@ -43,6 +43,12 @@ interface DetailsInterface {
     ): Response<VolunteerProfileResponse>
 
 
+    @GET("api/accounts/create-volunteer-profile/")
+    suspend fun getVolunteerProfile(
+        @Header("Authorization") token: String
+    ) : Response<VolunteerProfileResponse>
+
+
 
 
 }

@@ -27,12 +27,21 @@ sealed class GetProfileState{
 
 }
 
+sealed class GetVolunteerProfileState{
+    object Idle : GetVolunteerProfileState()
+    object Loading : GetVolunteerProfileState()
+    data class Success(val data: VolunteerProfile) : GetVolunteerProfileState()
+    data class Error(val message: String) : GetVolunteerProfileState()
+}
+
 sealed class CreateVolunteerProfileState{
     object Idle : CreateVolunteerProfileState()
     object Loading : CreateVolunteerProfileState()
     data class Success(val data: VolunteerProfile) : CreateVolunteerProfileState()
     data class Error(val message: String) : CreateVolunteerProfileState()
 }
+
+
 class DetailViewModel (
     val repo: UserDetailRepo
 ) : ViewModel() {
@@ -45,6 +54,10 @@ class DetailViewModel (
 
     private val _createVolunteerProfileState = MutableStateFlow<CreateVolunteerProfileState>(CreateVolunteerProfileState.Idle)
     val createVolunteerProfileState: StateFlow<CreateVolunteerProfileState> = _createVolunteerProfileState.asStateFlow()
+
+
+    private val _getVolunteerProfileState = MutableStateFlow<GetVolunteerProfileState>(GetVolunteerProfileState.Idle)
+    val getVolunteerProfileState: StateFlow<GetVolunteerProfileState> = _getVolunteerProfileState.asStateFlow()
 
 
     fun createUserProfile(request: UserDetailReq){
@@ -157,6 +170,30 @@ class DetailViewModel (
 
         }
 
+    }
+
+    fun getVolunteerProfile(){
+        _getVolunteerProfileState.value = GetVolunteerProfileState.Loading
+        viewModelScope.launch {
+            try {
+                val response = repo.get_volunteer_profile()
+                println(response)
+                println(response.body())
+                println(response.isSuccessful)
+                println(response.code())
+                println(response.errorBody())
+                if(response.isSuccessful && response.body()!=null){
+                    _getVolunteerProfileState.value = GetVolunteerProfileState.Success(response.body()!!.data)
+                }
+                else{
+                    throw Exception("Failed to get volunteer profile")
+
+
+                }
+            } catch (e: Exception) {
+                _getVolunteerProfileState.value = GetVolunteerProfileState.Error(e.message ?: "An error occurred")
+            }
+        }
     }
 
 

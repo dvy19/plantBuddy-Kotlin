@@ -64,33 +64,7 @@ fun NgoLoginScreen(
 
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "NGO Credentials",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = ForestGreen
-                        )
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        mainNavController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = "Back",
-                            tint = ForestGreen
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF9FBF9)
-                )
-            )
-        },
+
         containerColor = Color(0xFFF9FBF9)
     ) { innerPadding ->
         Column(
@@ -107,7 +81,7 @@ fun NgoLoginScreen(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Create Account",
+                    text = "Continue with Your Account",
                     style = MaterialTheme.typography.headlineSmall.copy(
                         fontWeight = FontWeight.Bold,
                         color = ForestGreen
@@ -117,7 +91,7 @@ fun NgoLoginScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Set up your NGO's login email and password to manage your environmental initiatives.",
+                    text = "Continue to Access your account..",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -154,7 +128,9 @@ fun NgoLoginScreen(
                         focusedBorderColor = MeadowGreen,
                         unfocusedBorderColor = SageOutline,
                         focusedLabelColor = MeadowGreen,
-                        unfocusedLabelColor = Color.Gray
+                        unfocusedLabelColor = Color.Gray,
+                        unfocusedTextColor = Color.Black,
+                        focusedTextColor = Color.Black,
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -193,7 +169,9 @@ fun NgoLoginScreen(
                         focusedBorderColor = MeadowGreen,
                         unfocusedBorderColor = SageOutline,
                         focusedLabelColor = MeadowGreen,
-                        unfocusedLabelColor = Color.Gray
+                        unfocusedLabelColor = Color.Gray,
+                        unfocusedTextColor = Color.Black,
+                        focusedTextColor = Color.Black,
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -233,7 +211,12 @@ fun NgoLoginScreen(
                         focusedBorderColor = MeadowGreen,
                         unfocusedBorderColor = SageOutline,
                         focusedLabelColor = MeadowGreen,
-                        unfocusedLabelColor = Color.Gray
+                        unfocusedLabelColor = Color.Black,
+
+                        unfocusedTextColor = Color.Black,
+                        focusedTextColor = Color.Black,
+
+
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -268,14 +251,14 @@ fun NgoLoginScreen(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MeadowGreen,
                     contentColor = Color.White,
-                    disabledContainerColor = SageOutline.copy(alpha = 0.5f)
+                    disabledContainerColor =Color.Gray
                 )
             ) {
 
                 when(loginState){
                     is LoginState.Idle -> {
                         Text(
-                            text = "Register",
+                            text = "Login",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             )
@@ -309,6 +292,27 @@ fun NgoLoginScreen(
 
                 }
 
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Navigation to Login
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "New Here ?",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+                TextButton(onClick = { mainNavController.navigate(Screens.NgoRegistrationForm.route) }) {
+                    Text(
+                        text = "Create Account",
+                        style = MaterialTheme.typography.labelLarge,
+                        color=Color.Blue
+                    )
+                }
             }
         }
     }

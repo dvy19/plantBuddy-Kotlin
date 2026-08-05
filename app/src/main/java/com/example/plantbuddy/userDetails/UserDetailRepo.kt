@@ -38,6 +38,12 @@ class UserDetailRepo(
         )
     }
 
+    suspend fun get_volunteer_profile() : Response<VolunteerProfileResponse>{
+        return api.getVolunteerProfile(
+            "Bearer $token"
+        )
+    }
+
     suspend fun create_volunteer_profile(
         name:String,
         phone:String,

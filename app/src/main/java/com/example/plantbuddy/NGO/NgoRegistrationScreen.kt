@@ -61,33 +61,6 @@ fun NgoRegistrationScreen(
 
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "NGO Credentials",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = ForestGreen
-                        )
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        mainNavController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = "Back",
-                            tint = ForestGreen
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF9FBF9)
-                )
-            )
-        },
         containerColor = Color(0xFFF9FBF9)
     ) { innerPadding ->
         Column(
@@ -151,7 +124,9 @@ fun NgoRegistrationScreen(
                         focusedBorderColor = MeadowGreen,
                         unfocusedBorderColor = SageOutline,
                         focusedLabelColor = MeadowGreen,
-                        unfocusedLabelColor = Color.Gray
+                        unfocusedLabelColor = Color.Gray,
+                        unfocusedTextColor = Color.Black,
+                        focusedTextColor = Color.Black,
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -190,7 +165,9 @@ fun NgoRegistrationScreen(
                         focusedBorderColor = MeadowGreen,
                         unfocusedBorderColor = SageOutline,
                         focusedLabelColor = MeadowGreen,
-                        unfocusedLabelColor = Color.Gray
+                        unfocusedLabelColor = Color.Gray,
+                        unfocusedTextColor = Color.Black,
+                        focusedTextColor = Color.Black,
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -230,7 +207,9 @@ fun NgoRegistrationScreen(
                         focusedBorderColor = MeadowGreen,
                         unfocusedBorderColor = SageOutline,
                         focusedLabelColor = MeadowGreen,
-                        unfocusedLabelColor = Color.Gray
+                        unfocusedLabelColor = Color.Gray,
+                        unfocusedTextColor = Color.Black,
+                        focusedTextColor = Color.Black,
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -266,7 +245,7 @@ fun NgoRegistrationScreen(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MeadowGreen,
                     contentColor = Color.White,
-                    disabledContainerColor = SageOutline.copy(alpha = 0.5f)
+                    disabledContainerColor = Color.Gray
                 )
             ) {
 
@@ -322,12 +301,13 @@ fun NgoRegistrationScreen(
                 Text(
                     text = "Already have an account?",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.Gray
                 )
                 TextButton(onClick = { mainNavController.navigate(Screens.NgoLoginScreen.route) }) {
                     Text(
                         text = "Log In",
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.labelLarge,
+                        color=Color.Blue
                     )
                 }
             }

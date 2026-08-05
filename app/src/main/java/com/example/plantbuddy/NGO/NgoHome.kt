@@ -1,9 +1,11 @@
 package com.example.plantbuddy.NGO
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,9 +29,11 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.plantbuddy.NGO.Screens.SoftLeafGreen
 import com.example.plantbuddy.NGO.campaign.OngoingCampaignCard
 import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.SessionManager
@@ -58,13 +62,17 @@ fun NgoHome(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(
-                modifier = Modifier.width(240.dp)
+                modifier = Modifier.width(240.dp),
+                drawerContainerColor = Color.White,
             ) {
                 // Header spacing (or add a DrawerHeader here)
                 Spacer(modifier = Modifier.height(16.dp))
 
+                /*
                 NavigationDrawerItem(
-                    label = { Text("Saved Facts") },
+                    label = { Text(
+                        "Saved Facts"
+                    ) },
                     selected = false,
                     onClick = {
                         mainNavController.navigate(Screens.SavedFactsScreen.route)
@@ -91,8 +99,14 @@ fun NgoHome(
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
 
+
+                 */
                 NavigationDrawerItem(
-                    label = { Text("logout") },
+                    label = { Text(
+                        "logout",
+                        color = Color.Red
+
+                    ) },
                     selected = false,
 
                     onClick = {
@@ -123,6 +137,8 @@ fun NgoHome(
         Scaffold(
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.heightIn(min = 56.dp)
+                        .background(SoftLeafGreen),
                     title = { Text("HomeScreen") },
                     navigationIcon = {
                         IconButton(
@@ -136,6 +152,7 @@ fun NgoHome(
                             )
                         }
                     },
+
                     actions = {
                         IconButton(onClick = {}) {
                             Icon(
@@ -160,6 +177,7 @@ fun NgoHome(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color.White)
                     .padding(innerPadding),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {

@@ -3,6 +3,7 @@ package com.example.plantbuddy.screens
 import HomeRowCard
 import android.R.attr.onClick
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -224,6 +225,10 @@ fun HomeScreen(mainNavController: NavController) {
 
                     onClick = {
                         sessionManager.logout()
+
+                        mainNavController.navigate(Screens.GetStartScreen.route)
+
+                        Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
