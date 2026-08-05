@@ -49,6 +49,7 @@ sealed class Screens( var route:String){
     data object PlantCatalogScreen:Screens("plant_catalog")
     data object YourPlantsScreen:Screens("your_plant")
     data object CommunityScreen:Screens("community_screen")
+    data object VolunteerProfileForm:Screens("volunteer_profile")
 
     data object NgoDetailsScreen:Screens("ngo_details")
     data object NgoRegistrationForm:Screens("ngo_registration")

@@ -44,6 +44,7 @@ import com.example.plantbuddy.NGO.campaign.Campaign
 import com.example.plantbuddy.screens.community.CampaignDetailScreen
 import com.example.plantbuddy.screens.community.CommunityScreen
 import com.example.plantbuddy.screens.community.NgoAllActiveCampaigns
+import com.example.plantbuddy.screens.profile.VolunteerProfileForm
 
 @Composable
 fun RootNav(innerPadding: PaddingValues) {
@@ -89,6 +90,10 @@ fun RootNav(innerPadding: PaddingValues) {
 
             composable(Screens.UserProfileScreenLayout.route){
                 UserProfileScreenLayout(mainNavController)
+            }
+
+            composable(Screens.VolunteerProfileForm.route){
+                VolunteerProfileForm(mainNavController)
             }
 
             composable(Screens.PlantCatalogScreen.route){

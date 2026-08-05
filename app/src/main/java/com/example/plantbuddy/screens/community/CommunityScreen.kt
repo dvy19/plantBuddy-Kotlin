@@ -47,6 +47,7 @@ import com.example.plantbuddy.screens.PlantCard
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
@@ -178,10 +179,12 @@ fun CommunityScreen(
                         }
                     },
                     actions = {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+                            mainNavController.navigate(Screens.VolunteerProfileForm.route)
+                        }) {
                             Icon(
-                                imageVector = Icons.Default.Message,
-                                contentDescription = "Messages"
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "volunteer profile"
                             )
                         }
                     }

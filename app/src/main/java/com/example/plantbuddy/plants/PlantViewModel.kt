@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.plantbuddy.room.DatabaseProvider
+import com.example.plantbuddy.room.plantOfDay.PlantDayResponse
+import com.example.plantbuddy.room.plantOfDay.PlantOFDayReq
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,6 +39,16 @@ sealed class GetSinglePlantState{
     data class Success(val data: Plant): GetSinglePlantState()
     data class Error(val message:String): GetSinglePlantState()
 }
+
+
+sealed class GetPlantOfDayState{
+    object Idle: GetPlantOfDayState()
+    object Loading: GetPlantOfDayState()
+    data class Success(val data: PlantDayResponse): GetPlantOfDayState()
+    data class Error(val message:String): GetPlantOfDayState()
+}
+
+
 class PlantViewModel(
     private val repo :PlantRepo
 
@@ -61,6 +73,10 @@ class PlantViewModel(
     )
     val getSinglePlantState: StateFlow<GetSinglePlantState> = _getSinglePlantState.asStateFlow()
 
+    private val _getPlantOfDayState = MutableStateFlow<GetPlantOfDayState>(
+        GetPlantOfDayState.Idle
+    )
+    val getPlantOfDayState: StateFlow<GetPlantOfDayState> = _getPlantOfDayState.asStateFlow()
 
     private var currentPage = 1
 
@@ -187,6 +203,34 @@ class PlantViewModel(
 
 
     }
+
+    fun getPlantOfDay(request: PlantOFDayReq){
+
+        viewModelScope.launch {
+
+            _getPlantOfDayState.value = GetPlantOfDayState.Loading
+
+            try{
+                val response = repo.get_plant_od_day(request)
+
+
+                if(response.body() != null && response.isSuccessful){
+                    _getPlantOfDayState.value = GetPlantOfDayState.Success(response.body()!!)
+                }
+
+                else{
+                    _getPlantOfDayState.value = GetPlantOfDayState.Error( response.message() ?: "Failed to fetch posts")
+                }
+
+            }
+            catch (e:Exception){
+                _getPlantOfDayState.value = GetPlantOfDayState.Error(e.message.toString())
+            }
+        }
+
+
+    }
+
 
 
 }

@@ -3,6 +3,8 @@ package com.example.plantbuddy.plants
 import com.example.plantbuddy.ApiClient
 import com.example.plantbuddy.room.dailyFacts.DailyFactDao
 import com.example.plantbuddy.room.dailyFacts.DailyFactEntity
+import com.example.plantbuddy.room.plantOfDay.PlantDayResponse
+import com.example.plantbuddy.room.plantOfDay.PlantOFDayReq
 import retrofit2.Response
 import java.time.LocalDate
 
@@ -62,6 +64,10 @@ class PlantRepo(
     }
 
 
+    suspend fun get_plant_od_day(request: PlantOFDayReq): Response<PlantDayResponse>{
+        return plantInterface.getPlantOfDay(request)
+
+    }
 
 
 }

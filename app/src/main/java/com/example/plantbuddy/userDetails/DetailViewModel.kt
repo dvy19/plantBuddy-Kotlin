@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 
 
 sealed class CreateProfileState{
@@ -25,6 +26,13 @@ sealed class GetProfileState{
     data class Error(val message: String) : GetProfileState()
 
 }
+
+sealed class CreateVolunteerProfileState{
+    object Idle : CreateVolunteerProfileState()
+    object Loading : CreateVolunteerProfileState()
+    data class Success(val data: VolunteerProfile) : CreateVolunteerProfileState()
+    data class Error(val message: String) : CreateVolunteerProfileState()
+}
 class DetailViewModel (
     val repo: UserDetailRepo
 ) : ViewModel() {
@@ -34,6 +42,10 @@ class DetailViewModel (
 
     private val _getProfileState = MutableStateFlow<GetProfileState>(GetProfileState.Idle)
     val getProfileState: StateFlow<GetProfileState> = _getProfileState.asStateFlow()
+
+    private val _createVolunteerProfileState = MutableStateFlow<CreateVolunteerProfileState>(CreateVolunteerProfileState.Idle)
+    val createVolunteerProfileState: StateFlow<CreateVolunteerProfileState> = _createVolunteerProfileState.asStateFlow()
+
 
     fun createUserProfile(request: UserDetailReq){
 
@@ -103,9 +115,54 @@ class DetailViewModel (
 
 
 
+    fun createVolunteerProfile(
+        name:String,
+        phone:String,
+        city:String,
+        gender:String,
+        image:MultipartBody.Part?
+    ){
+        _createVolunteerProfileState.value = CreateVolunteerProfileState.Loading
+        viewModelScope.launch {
+
+            try {
+                val response = repo.create_volunteer_profile(
+                    name,
+                    phone,
+                    city,
+                    gender,
+                    image
+                )
+
+                println(response)
+
+                println(response.body())
 
 
-}
+                println(response.isSuccessful)
+
+                println(response.code())
+                println(response.errorBody())
+
+
+                if(response.isSuccessful && response.body()!=null){
+                    _createVolunteerProfileState.value = CreateVolunteerProfileState.Success(response.body()!!.data)
+                }
+                else{
+                    throw Exception("Failed to create volunteer profile")
+                }
+                } catch (e: Exception) {
+                    _createVolunteerProfileState.value = CreateVolunteerProfileState.Error(e.message ?: "An error occurred")
+                }
+
+        }
+
+    }
+
+
+
+
+    }
 
 
 

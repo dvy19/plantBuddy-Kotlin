@@ -58,6 +58,8 @@ import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.RegisterState
 import com.example.plantbuddy.auth.SessionManager
 import com.example.plantbuddy.auth.SignupRequest
+import com.example.plantbuddy.component.VolunteerProfile
+import com.example.plantbuddy.component.VolunteerProfileCard
 import com.example.plantbuddy.screens.ForestGreen
 import com.example.plantbuddy.screens.SoftWhiteBackground
 import com.example.plantbuddy.userDetails.DetailViewModel
@@ -309,6 +311,18 @@ fun ProfileScreen(
             )
 
             Spacer(modifier = Modifier.weight(1f))
+
+            VolunteerProfileCard(
+                profile = VolunteerProfile(
+                    name = "Aarav Sharma",
+                    city = "New Delhi, India",
+                    gender = "Male",
+                    phone = "+91 98765 43210"
+                )
+
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Logout Action (styled distinctly with destructive color)
             AssistChip(

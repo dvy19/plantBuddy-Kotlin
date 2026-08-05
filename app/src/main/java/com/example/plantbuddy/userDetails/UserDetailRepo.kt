@@ -2,6 +2,10 @@ package com.example.plantbuddy.userDetails
 
 import com.example.plantbuddy.ApiClient
 import com.example.plantbuddy.auth.SessionManager
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 
 class UserDetailRepo(
@@ -9,6 +13,12 @@ class UserDetailRepo(
 ) {
 
     val token=sessionManager.getAccessToken()
+
+
+
+    fun String.toPlainText(): RequestBody {
+        return this.toRequestBody("text/plain".toMediaType())
+    }
 
 
     val api= ApiClient.detailApi
@@ -28,6 +38,25 @@ class UserDetailRepo(
         )
     }
 
+    suspend fun create_volunteer_profile(
+        name:String,
+        phone:String,
+        city:String,
+        gender:String,
+        image:MultipartBody.Part?
+    ) : Response<VolunteerProfileResponse>{
+        return api.createVolunteerProfile(
+            "Bearer $token",
+
+            name = name.toPlainText(),
+            phone = phone.toPlainText(),
+            city = city.toPlainText(),
+            gender = gender.toPlainText(),
+            image = image
+
+        )
+
+    }
 
 
 }

@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +39,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.plantbuddy.plants.PlantViewModel
 
 // --- Plant App Color Palette ---
 private val ForestGreen = Color(0xFF1E3A27)
@@ -47,13 +50,18 @@ private val SageOutline = Color(0xFFA8C3AD)
 
 @Composable
 fun PlantOfTheDayCard(
-    plantName: String = "Monstera Deliciosa",
-    scientificName: String = "Monstera deliciosa Liebm.",
-    plantType: String = "Tropical / Indoor",
-    waterNeeds: String = "Every 1-2 wks",
-    lightNeeds: String = "Bright Indirect",
-    imageResId: Int? = null, // Pass R.drawable.your_plant_image here
-    onFavoriteClick: () -> Unit = {},
+    name:String,
+
+    scientific_name:String,
+    category:String,
+    why_today:String,
+    care_tip:String,
+    fun_fact:String,
+    watering:String,
+    sunlight:String,
+    difficulty:String,
+    pet_friendly:Boolean,
+    air_purifying:Boolean,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -93,7 +101,7 @@ fun PlantOfTheDayCard(
                 }
 
                 IconButton(
-                    onClick = onFavoriteClick,
+                    onClick = {},
                     modifier = Modifier
                         .size(36.dp)
                         .background(Color.White.copy(alpha = 0.7f), CircleShape)
@@ -120,14 +128,7 @@ fun PlantOfTheDayCard(
                     .border(1.dp, SageOutline.copy(alpha = 0.5f), RoundedCornerShape(20.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                if (imageResId != null) {
-                    Image(
-                        painter = painterResource(id = imageResId),
-                        contentDescription = plantName,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.matchParentSize()
-                    )
-                } else {
+
                     // Placeholder visual when image is loading/null
                     Icon(
                         imageVector = Icons.Outlined.LocalFlorist,
@@ -142,14 +143,14 @@ fun PlantOfTheDayCard(
 
             // Plant Titles
             Text(
-                text = plantName,
+                text = name,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = ForestGreen
             )
 
             Text(
-                text = scientificName,
+                text = scientific_name,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
                 color = MeadowGreen.copy(alpha = 0.8f)
@@ -164,23 +165,23 @@ fun PlantOfTheDayCard(
             ) {
                 PlantCareBadge(
                     icon = Icons.Outlined.LocalFlorist,
-                    label = plantType,
+                    label = category,
                     modifier = Modifier.weight(1f)
                 )
                 PlantCareBadge(
                     icon = Icons.Outlined.Opacity,
-                    label = waterNeeds,
+                    label = watering,
                     modifier = Modifier.weight(1f)
                 )
                 PlantCareBadge(
                     icon = Icons.Outlined.LightMode,
-                    label = lightNeeds,
+                    label = sunlight,
                     modifier = Modifier.weight(1f)
                 )
             }
         }
     }
-}
+
 
 @Composable
 private fun PlantCareBadge(
@@ -213,17 +214,5 @@ private fun PlantCareBadge(
                 maxLines = 1
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PlantOfTheDayCardPreview() {
-    Box(
-        modifier = Modifier
-            .background(Color(0xFFF6F8F6))
-            .padding(16.dp)
-    ) {
-        PlantOfTheDayCard()
     }
 }
