@@ -1,6 +1,7 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,13 +22,16 @@ import androidx.compose.material.icons.outlined.Grain
 import androidx.compose.material.icons.outlined.LocalFlorist
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.material.icons.outlined.WbSunny
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.*
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +44,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.plantbuddy.weather.WeatherState
+import com.example.plantbuddy.weather.WeatherViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 // --- Plant App Color Palette ---
 private val ForestGreen = Color(0xFF1E3A27)
@@ -54,17 +64,22 @@ private val SageOutline = Color(0xFFA8C3AD)
 fun HomeRowCard(
     modifier: Modifier = Modifier,
     // Weather Data
-    temperature: String = "24°C",
-    weatherCondition: String = "Partly Cloudy",
-    humidity: String = "68%",
-    rainfall: String = "2.4 mm",
-    sunrise: String = "06:12 AM",
-    // Plant Data
-    plantName: String = "Monstera",
-    plantType: String = "Tropical / Indoor",
     plantImageResId: Int? = null,
     onPlantClick: () -> Unit = {}
 ) {
+
+    val weatherViewModel: WeatherViewModel = viewModel()
+
+
+    var showDialog by remember { mutableStateOf(false) }
+
+
+    val weatherState by weatherViewModel.weatherState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        weatherViewModel.fetchWeather("Delhi")
+    }
+
     // IntrinsicSize.Min matches the height of both cards equally
     Row(
         modifier = modifier
@@ -74,21 +89,99 @@ fun HomeRowCard(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Left Column: Compact Weather Card
-        CompactWeatherCard(
-            temperature = temperature,
-            condition = weatherCondition,
-            humidity = humidity,
-            rainfall = rainfall,
-            sunrise = sunrise,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-        )
+
+        when(val state=weatherState){
+
+            is WeatherState.Idle -> {
+
+            }
+
+            is WeatherState.Loading -> {
+
+            }
+
+            is WeatherState.Success -> {
+
+                val weatherData=state.data
+
+                CompactWeatherCard(
+                    temperature = weatherData.main.temp.toString(),
+                    condition = weatherData.name,
+                    humidity = weatherData.main.humidity.toString(),
+                    rainfall = weatherData.rain.toString(),
+                    sunrise = formatTime(weatherData.sys.sunrise),
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable{
+                            showDialog=true
+                        }
+                        .fillMaxHeight()
+                )
+
+                if (showDialog) {
+
+                    AlertDialog(
+
+                        onDismissRequest = {
+                            showDialog = false
+                        },
+
+                        title = {
+                            Text("${weatherData.name} Weather")
+                        },
+
+                        text = {
+                            Column {
+
+                                Text("🌡 Temperature: ${weatherData.main.temp}°C")
+
+                                Text("💧 Humidity: ${weatherData.main.humidity}%")
+
+                                Text(
+                                    "☁ Condition: ${weatherData.weather.firstOrNull()?.main ?: "N/A"}"
+                                )
+
+                                Text(
+                                    "📝 ${weatherData.weather.firstOrNull()?.description ?: "N/A"}"
+                                )
+
+                                Text("💨 Wind: ${weatherData.wind.speed} m/s")
+
+                                Text(
+                                    "🌧 Rain: ${weatherData.rain?.oneHour ?: 0.0} mm"
+                                )
+
+                                Text("🌅 Sunrise: ${formatTime(weatherData.sys.sunrise)}")
+
+                                Text("🌇 Sunset: ${formatTime(weatherData.sys.sunset)}")
+                            }
+                        },
+
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    showDialog = false
+                                }
+                            ) {
+                                Text("OK")
+                            }
+                        }
+                    )
+
+
+                }
+            }
+
+            is WeatherState.Error->{
+
+            }
+        }
+
 
         // Right Column: Compact Plant Card
         CompactPlantCard(
-            name = plantName,
-            type = plantType,
+            name = "Plant Name",
+            type = "Plant Type",
             imageResId = plantImageResId,
             onClick = onPlantClick,
             modifier = Modifier
@@ -107,6 +200,8 @@ private fun CompactWeatherCard(
     sunrise: String,
     modifier: Modifier = Modifier
 ) {
+
+    var showDialog by remember{mutableStateOf(false)}
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(22.dp),
@@ -288,4 +383,10 @@ private fun CompactPlantCard(
             )
         }
     }
+}
+
+fun formatTime(timestamp: Long): String {
+    val date = Date(timestamp * 1000)
+    val format = SimpleDateFormat("hh:mm a", Locale.getDefault())
+    return format.format(date)
 }

@@ -1,6 +1,6 @@
 package com.example.plantbuddy.FAQRetrofit
 
- data class FaqRequest (
+data class FaqRequest (
      var question_id:Int,
      var plant_id:Int
  )
