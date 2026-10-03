@@ -25,6 +25,7 @@ sealed class LoginState{
     data class Success(val data: LoginResponse): LoginState()
     data class Error(val message: String): LoginState()
 }
+
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repo = AuthRepo()

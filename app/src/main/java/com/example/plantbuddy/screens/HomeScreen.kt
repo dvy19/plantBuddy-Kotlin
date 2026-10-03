@@ -77,7 +77,6 @@ import com.example.plantbuddy.NGO.Screens.SoftLeafGreen
 import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.SessionManager
 import com.example.plantbuddy.component.HomeCategoryCard
-import com.example.plantbuddy.component.HomeWeatherCard
 import com.example.plantbuddy.component.PlantFactCard
 import com.example.plantbuddy.plants.GetAllPlantsState
 import com.example.plantbuddy.plants.GetFactState

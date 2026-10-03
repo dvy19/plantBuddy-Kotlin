@@ -49,4 +49,18 @@ class SavedFactViewModel(
         fun resetSaveState() {
             _saveState.value = SavedFactState.Idle
         }
+
+    fun deleteAllFacts(facts: List<SavedFact>) {
+        viewModelScope.launch {
+            repository.deleteAllFacts(facts)
+        }
     }
+
+    fun deleteSingleFact(fact: SavedFact) {
+        viewModelScope.launch {
+            repository.deleteFact(fact)
+        }
+    }
+
+
+}

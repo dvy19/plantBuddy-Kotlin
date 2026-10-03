@@ -14,6 +14,12 @@ class SavedFactRepository(
         dao.deleteFact(fact)
     }
 
+    suspend fun deleteAllFacts(facts: List<SavedFact>) {
+        facts.forEach { fact ->
+            dao.deleteFact(fact)
+        }
+    }
+
     suspend fun isSaved(title: String, content: String) =
         dao.isSaved(title, content)
 }

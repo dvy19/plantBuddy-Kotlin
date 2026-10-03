@@ -2,9 +2,11 @@ package com.example.plantbuddy.screens
 
 
 
+import com.example.plantbuddy.R
 
 import android.util.Log
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -83,11 +86,10 @@ fun SplashScreen(
             modifier = Modifier.padding(horizontal = 32.dp)
         ) {
             // Swapped to an Outlined Explore (Compass) icon for a premium travel feel
-            Icon(
-                imageVector = Icons.Outlined.Explore,
-                contentDescription = "Travel Guide Logo",
-                tint = TravelTeal,
-                modifier = Modifier.size(88.dp) // Slightly scaled down for better minimalism
+            Image(
+                painter = painterResource(id = R.drawable.plant),
+                contentDescription = "App Logo",
+                modifier = Modifier.size(150.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))

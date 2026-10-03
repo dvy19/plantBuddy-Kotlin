@@ -2,6 +2,7 @@ package com.example.plantbuddy.screens.profile
 
 import android.se.omapi.Session
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -84,7 +85,8 @@ fun UserProfileScreenLayout(
 
     val getProfileState by viewModel.getProfileState.collectAsState()
 
-    Log.d("maccess token",accessToken.toString())
+    Log.d("access token",accessToken.toString())
+
     if(accessToken==null){
 
         LandingScreen(
@@ -97,12 +99,12 @@ fun UserProfileScreenLayout(
 
         )
     }
+
     else{
 
         LaunchedEffect(Unit) {
             Log.d("Compose", "Calling API")
             viewModel.getUserProfile()
-
         }
 
         Log.d("m",getProfileState.toString())
@@ -112,8 +114,6 @@ fun UserProfileScreenLayout(
 
             is Idle -> {
                 Log.d("m",getProfileState.toString())
-
-
             }
             is GetProfileState.Loading -> {
                 Log.d("m",getProfileState.toString())
@@ -134,10 +134,12 @@ fun UserProfileScreenLayout(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
-                            text = "Loading...",
+                            text = "Loading... ",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.Gray
                         )
+
+
                     }
                 }
             }
@@ -153,6 +155,8 @@ fun UserProfileScreenLayout(
 
                     onLogoutClick = {
                         sessionManager.logout()
+                        mainNavController.navigate(Screens.GetStartScreen.route)
+                        Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show()
                     },
                     onYourPlantsClick = {
                         mainNavController.navigate(Screens.PlantCatalogScreen.route)
@@ -180,10 +184,34 @@ fun UserProfileScreenLayout(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
-                            text = "Error Loading Data",
+                            text = "Please Login Again",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.Gray
                         )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+
+                        // Secondary Action: Create Account
+                        OutlinedButton(
+                            onClick = {
+                                sessionManager.logout()
+
+                                mainNavController.navigate(Screens.GetStartScreen.route)
+
+                                Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show()
+                            },
+                            modifier = Modifier
+
+                                .height(52.dp),
+                            shape = MaterialTheme.shapes.medium
+                        ) {
+                            Text(
+                                text = "Log Out",
+                                color= Color.Black,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
                     }
                 }
             }

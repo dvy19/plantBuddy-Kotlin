@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +36,7 @@ import com.example.plantbuddy.room.SavedViewModelFac
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.plantbuddy.NGO.Screens.SoftLeafGreen
 import com.example.plantbuddy.Screens
+import com.example.plantbuddy.component.SavedFactComponent
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,9 +87,9 @@ fun SavedFactsScreen(
                     actionIconContentColor = Color.Black
                 ),
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {viewModel.deleteAllFacts(savedFacts)}) {
                         Icon(
-                            imageVector = Icons.Default.Message,
+                            imageVector = Icons.Default.Delete,
                             contentDescription = "Messages"
                         )
                     }
@@ -106,19 +108,8 @@ fun SavedFactsScreen(
 
             items(savedFacts) { fact ->
 
-                PlantFactCard(
-                    mainNavController = mainNavController,
-                    onFactClick = {
-                        mainNavController.currentBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("fact", fact)
-                        mainNavController.navigate("fact_details")
-                    },
-                    heading = fact.title,
-                    content = fact.fact,
-                    category = fact.category
-
-
+                SavedFactComponent(
+                    fact = fact
                 )
             }
         }

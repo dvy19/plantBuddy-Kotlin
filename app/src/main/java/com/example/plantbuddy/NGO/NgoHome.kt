@@ -37,7 +37,6 @@ import com.example.plantbuddy.NGO.Screens.SoftLeafGreen
 import com.example.plantbuddy.NGO.campaign.OngoingCampaignCard
 import com.example.plantbuddy.Screens
 import com.example.plantbuddy.auth.SessionManager
-import com.example.plantbuddy.component.HomeWeatherCard
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
