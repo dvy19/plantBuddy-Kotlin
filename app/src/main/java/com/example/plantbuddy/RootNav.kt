@@ -44,6 +44,7 @@ import com.example.plantbuddy.NGO.campaign.Campaign
 import com.example.plantbuddy.screens.community.CampaignDetailScreen
 import com.example.plantbuddy.screens.community.CommunityScreen
 import com.example.plantbuddy.screens.community.NgoAllActiveCampaigns
+import com.example.plantbuddy.screens.community.SendVolunteerReq
 import com.example.plantbuddy.screens.profile.VolunteerProfileForm
 
 
@@ -160,6 +161,24 @@ fun RootNav(innerPadding: PaddingValues) {
                 val id = backStackEntry.arguments?.getInt("id")
 
                 CampaignDetailScreen(
+                    mainNavController = mainNavController,
+                    campaign_id= id,
+
+                    )
+            }
+
+            composable(
+                route = Screens.SendVolunteerReq.route,
+                arguments = listOf(
+                    navArgument("id") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+
+                val id = backStackEntry.arguments?.getInt("id")
+
+                SendVolunteerReq(
                     mainNavController = mainNavController,
                     campaign_id= id,
 

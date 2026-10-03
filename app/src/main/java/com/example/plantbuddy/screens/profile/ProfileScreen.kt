@@ -197,7 +197,7 @@ fun UserProfileScreenLayout(
                             onClick = {
                                 sessionManager.logout()
 
-                                mainNavController.navigate(Screens.GetStartScreen.route)
+                                mainNavController.navigate(Screens.LoginScreen.route)
 
                                 Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show()
                             },

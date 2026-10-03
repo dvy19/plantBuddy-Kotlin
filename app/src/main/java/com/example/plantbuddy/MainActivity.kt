@@ -61,4 +61,7 @@ sealed class Screens( var route:String){
     data object NgoAllActiveCampaigns:Screens("ngo_all_active_campaigns/{id}")
     data object CampaignDetailScreen:Screens("campaign_detail/{id}")
 
+    data object SendVolunteerReq:Screens("send_volunteer_req/{id}")
+
+
 }

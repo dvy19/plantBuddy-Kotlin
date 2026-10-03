@@ -119,7 +119,7 @@ fun CampaignDetailScreen(
             // Action Buttons Bar
             SurfaceActionFooter(
                 onDonateClick = onDonateClick,
-                onVolunteerClick = onVolunteerClick,
+                onVolunteerClick = {mainNavController.navigate("send_volunteer_req/${campaign_id}")},
                 isActive = true
             )
         },
